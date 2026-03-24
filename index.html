@@ -3,296 +3,393 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ChemBalance — Grade 10 Chemistry</title>
-<link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<title>ChemBalance — Grade 10</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,600;0,800&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --bg: #0a0e1a;
-    --surface: #111827;
-    --surface2: #1a2236;
-    --border: #1e2d45;
-    --accent: #00e5ff;
-    --accent2: #7c3aed;
-    --accent3: #10b981;
-    --accent4: #f59e0b;
-    --danger: #ef4444;
-    --text: #e2e8f0;
-    --muted: #64748b;
-    --mono: 'Space Mono', monospace;
-    --sans: 'Syne', sans-serif;
-  }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { background: var(--bg); color: var(--text); font-family: var(--sans); min-height: 100vh; overflow-x: hidden; }
+:root {
+  --bg: #0b0c10;
+  --s1: #12141c;
+  --s2: #181b26;
+  --s3: #1f2333;
+  --bd: #252a3a;
+  --bd2: #2e3450;
+  --mint: #00e5a0;
+  --mintd: #00b880;
+  --orange: #ff7c3a;
+  --text: #dde3ef;
+  --muted: #5a6380;
+  --muted2: #8892aa;
+  --syn: #a78bfa;
+  --dec: #f87171;
+  --sng: #fbbf24;
+  --dbl: #34d399;
+  --white: #ffffff;
+  --mono: 'JetBrains Mono', monospace;
+  --sans: 'Outfit', sans-serif;
+  --r: 10px;
+  --r2: 6px;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--sans);
+  min-height: 100vh;
+  overflow-x: hidden;
+  cursor: default;
+}
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background:
+    radial-gradient(ellipse 60% 60% at 15% 40%, rgba(0,229,160,.04) 0%, transparent 70%),
+    radial-gradient(ellipse 50% 50% at 85% 60%, rgba(167,139,250,.03) 0%, transparent 70%);
+  pointer-events: none; z-index: 0;
+  animation: bg-breathe 18s ease-in-out infinite alternate;
+}
+@keyframes bg-breathe { from { opacity: 0.6; } to { opacity: 1; } }
 
-  /* HEADER */
-  header {
-    background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
-    border-bottom: 1px solid var(--border);
-    padding: 0 2rem;
-    position: sticky; top: 0; z-index: 100;
-    display: flex; align-items: center; justify-content: space-between;
-    height: 64px;
-  }
-  .logo {
-    font-family: var(--mono); font-size: 1.1rem; font-weight: 700;
-    color: var(--accent); letter-spacing: -0.02em;
-  }
-  .logo span { color: var(--text); }
-  nav { display: flex; gap: 4px; }
-  .nav-btn {
-    background: none; border: none; color: var(--muted);
-    font-family: var(--sans); font-size: 0.85rem; font-weight: 600;
-    padding: 6px 14px; border-radius: 6px; cursor: pointer;
-    transition: all 0.2s; text-transform: uppercase; letter-spacing: 0.05em;
-  }
-  .nav-btn:hover { color: var(--text); background: var(--surface2); }
-  .nav-btn.active { color: var(--accent); background: rgba(0,229,255,0.08); }
+/* HEADER */
+header {
+  position: sticky; top: 0; z-index: 90;
+  background: rgba(11,12,16,.88);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--bd);
+  display: flex; align-items: center; justify-content: space-between;
+  height: 58px; padding: 0 1.5rem;
+}
+.logo { font-family: var(--mono); font-size: .95rem; font-weight: 800; color: var(--mint); letter-spacing: -.01em; }
+.logo span { color: var(--text); }
+nav { display: flex; gap: 2px; align-items: center; }
+.nav-btn {
+  font-family: var(--sans); font-size: .8rem; font-weight: 600;
+  color: var(--muted2); background: none; border: none; padding: 6px 14px;
+  border-radius: var(--r2); cursor: pointer; transition: all .18s;
+  letter-spacing: .04em; text-transform: uppercase;
+}
+.nav-btn:hover { color: var(--text); background: var(--s3); }
+.nav-btn.active { color: var(--mint); background: rgba(0,229,160,.1); }
 
-  /* SECTIONS */
-  .section { display: none; padding: 2rem; max-width: 1100px; margin: 0 auto; }
-  .section.active { display: block; }
+/* KEYBOARD HINT */
+.kb-hint {
+  font-family: var(--mono); font-size: .62rem; color: var(--muted);
+  border: 1px solid var(--bd); border-radius: 4px; padding: 2px 6px;
+  display: inline-block;
+}
 
-  /* HERO */
-  .hero { text-align: center; padding: 3rem 1rem 2rem; }
-  .hero h1 { font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 800; line-height: 1.1;
-    background: linear-gradient(135deg, var(--accent), var(--accent2));
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 0.75rem; }
-  .hero p { color: var(--muted); font-size: 1rem; max-width: 480px; margin: 0 auto 2rem; }
-  .hero-badges { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
-  .badge {
-    background: var(--surface2); border: 1px solid var(--border);
-    border-radius: 20px; padding: 4px 12px; font-size: 0.78rem;
-    color: var(--muted); font-family: var(--mono);
-  }
+/* MAIN */
+.section { display: none; padding: 2rem 1.5rem; max-width: 1060px; margin: 0 auto; position: relative; z-index: 1; }
+.section.active { display: block; }
 
-  /* LEARN SECTION */
-  .learn-grid { display: grid; grid-template-columns: 240px 1fr; gap: 2rem; margin-top: 1.5rem; }
-  .learn-nav { position: sticky; top: 80px; height: fit-content; }
-  .learn-nav-item {
-    display: block; width: 100%; text-align: left; background: none; border: none;
-    color: var(--muted); font-family: var(--sans); font-size: 0.82rem; font-weight: 600;
-    padding: 8px 12px; border-radius: 6px; cursor: pointer; transition: all 0.2s;
-    border-left: 2px solid transparent; margin-bottom: 2px;
-  }
-  .learn-nav-item:hover { color: var(--text); background: var(--surface2); }
-  .learn-nav-item.active { color: var(--accent); border-left-color: var(--accent); background: rgba(0,229,255,0.05); }
-  .learn-content > div { display: none; }
-  .learn-content > div.active { display: block; }
-  .card {
-    background: var(--surface); border: 1px solid var(--border);
-    border-radius: 12px; padding: 1.5rem; margin-bottom: 1.2rem;
-  }
-  .card h3 { font-size: 1rem; font-weight: 700; color: var(--accent); margin-bottom: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; }
-  .card p { color: var(--text); line-height: 1.7; font-size: 0.92rem; margin-bottom: 0.75rem; }
-  .card p:last-child { margin-bottom: 0; }
-  .formula-box {
-    background: var(--bg); border: 1px solid var(--border); border-radius: 8px;
-    padding: 0.75rem 1rem; font-family: var(--mono); font-size: 0.9rem;
-    color: var(--accent3); margin: 0.75rem 0; display: block;
-  }
-  .rule-list { list-style: none; }
-  .rule-list li { padding: 6px 0; border-bottom: 1px solid var(--border); font-size: 0.88rem; color: var(--text); }
-  .rule-list li:last-child { border-bottom: none; }
-  .rule-list li::before { content: '→ '; color: var(--accent); font-weight: 700; }
-  .step-box { background: var(--surface2); border-radius: 8px; padding: 1rem; margin: 0.6rem 0; }
-  .step-box .step-num { font-family: var(--mono); font-size: 0.75rem; color: var(--accent4); font-weight: 700; margin-bottom: 4px; }
-  .step-box p { margin: 0; font-size: 0.88rem; }
-  .diatomic-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; margin-top: 0.5rem; }
-  .diatom-pill {
-    background: rgba(124,58,237,0.15); border: 1px solid var(--accent2);
-    border-radius: 6px; padding: 6px; text-align: center;
-    font-family: var(--mono); font-size: 0.85rem; color: var(--accent2); font-weight: 700;
-  }
-  .reaction-type-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-top: 0.5rem; }
-  .rt-card { background: var(--surface2); border-radius: 8px; padding: 1rem; border-left: 3px solid; }
-  .rt-card.syn { border-color: var(--accent3); }
-  .rt-card.dec { border-color: var(--danger); }
-  .rt-card.sng { border-color: var(--accent4); }
-  .rt-card.dbl { border-color: var(--accent); }
-  .rt-card.com { border-color: #f97316; }
-  .rt-card h4 { font-size: 0.82rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px; }
-  .rt-card.syn h4 { color: var(--accent3); }
-  .rt-card.dec h4 { color: var(--danger); }
-  .rt-card.sng h4 { color: var(--accent4); }
-  .rt-card.dbl h4 { color: var(--accent); }
-  .rt-card.com h4 { color: #f97316; }
-  .rt-card code { font-family: var(--mono); font-size: 0.78rem; color: var(--text); background: var(--bg); padding: 2px 6px; border-radius: 4px; display: block; margin: 4px 0; }
-  .rt-card p { font-size: 0.8rem; color: var(--muted); margin: 0; }
-  .notation-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-top: 0.5rem; }
-  .notate-pill { background: var(--surface2); border-radius: 8px; padding: 10px; display: flex; gap: 12px; align-items: center; }
-  .notate-pill .sym { font-family: var(--mono); font-size: 1rem; font-weight: 700; color: var(--accent4); min-width: 30px; }
-  .notate-pill .def { font-size: 0.82rem; color: var(--text); }
-  .warn-box { background: rgba(239,68,68,0.08); border: 1px solid rgba(239,68,68,0.3); border-radius: 8px; padding: 0.75rem 1rem; margin: 0.6rem 0; }
-  .warn-box p { color: #fca5a5; font-size: 0.85rem; margin: 0; }
-  .tip-box { background: rgba(0,229,255,0.06); border: 1px solid rgba(0,229,255,0.2); border-radius: 8px; padding: 0.75rem 1rem; margin: 0.6rem 0; }
-  .tip-box p { color: #a5f3fc; font-size: 0.85rem; margin: 0; }
+/* ======= HOME ======= */
+.hero { padding: 2.5rem 0 1.5rem; text-align: center; }
+.hero-eyebrow { font-family: var(--mono); font-size: .7rem; color: var(--mint); letter-spacing: .15em; text-transform: uppercase; margin-bottom: .75rem; }
+.hero h1 { font-size: clamp(1.8rem,4.5vw,3rem); font-weight: 800; line-height: 1.15;
+  background: linear-gradient(135deg, var(--text) 0%, var(--mint) 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: .6rem; }
+.hero p { color: var(--muted2); font-size: .9rem; max-width: 420px; margin: 0 auto 1.75rem; line-height: 1.6; }
+.type-pills { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin-bottom: 2rem; }
+.type-pill {
+  padding: 5px 14px; border-radius: 20px; font-size: .78rem; font-weight: 600;
+  border: 1px solid; letter-spacing: .02em;
+}
+.pill-syn { background: rgba(167,139,250,.1); border-color: rgba(167,139,250,.3); color: var(--syn); }
+.pill-dec { background: rgba(248,113,113,.1); border-color: rgba(248,113,113,.3); color: var(--dec); }
+.pill-sng { background: rgba(251,191,36,.1); border-color: rgba(251,191,36,.3); color: var(--sng); }
+.pill-dbl { background: rgba(52,211,153,.1); border-color: rgba(52,211,153,.3); color: var(--dbl); }
+.home-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px,1fr)); gap: 1rem; }
+.home-card {
+  background: var(--s1); border: 1px solid var(--bd); border-radius: var(--r);
+  padding: 1.5rem; cursor: pointer; transition: all .2s; position: relative; overflow: hidden;
+}
+.home-card::after { content: ''; position: absolute; inset: 0; border-radius: var(--r); opacity: 0; transition: opacity .3s; }
+.home-card:hover { transform: translateY(-2px); }
+.home-card.c-learn:hover { border-color: var(--mint); box-shadow: 0 0 20px rgba(0,229,160,.12); }
+.home-card.c-games:hover { border-color: var(--syn); box-shadow: 0 0 20px rgba(167,139,250,.12); }
+.home-card.c-tips:hover { border-color: var(--sng); box-shadow: 0 0 20px rgba(251,191,36,.1); }
+.home-card .icon { font-size: 1.75rem; margin-bottom: .75rem; display: block; }
+.home-card h3 { font-size: .95rem; font-weight: 700; margin-bottom: .4rem; }
+.home-card p { font-size: .82rem; color: var(--muted2); line-height: 1.6; margin-bottom: 1rem; }
+.quick-rules { list-style: none; margin-top: .5rem; }
+.quick-rules li { font-size: .8rem; color: var(--muted2); padding: 3px 0; }
+.quick-rules li::before { content: '→ '; color: var(--sng); }
 
-  /* GAMES SECTION */
-  .games-hero { margin-bottom: 1.5rem; }
-  .games-hero h2 { font-size: 1.5rem; font-weight: 800; }
-  .games-hero p { color: var(--muted); font-size: 0.9rem; }
-  .games-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1rem; }
-  .game-card {
-    background: var(--surface); border: 1px solid var(--border);
-    border-radius: 12px; padding: 1.25rem; cursor: pointer;
-    transition: all 0.25s; position: relative; overflow: hidden;
-  }
-  .game-card::before {
-    content: ''; position: absolute; inset: 0; opacity: 0;
-    transition: opacity 0.3s;
-  }
-  .game-card:hover { border-color: var(--accent); transform: translateY(-3px); box-shadow: 0 8px 30px rgba(0,229,255,0.12); }
-  .game-card:hover::before { opacity: 1; }
-  .game-icon { font-size: 2rem; margin-bottom: 0.75rem; }
-  .game-card h3 { font-size: 0.92rem; font-weight: 700; margin-bottom: 0.3rem; }
-  .game-card p { font-size: 0.78rem; color: var(--muted); line-height: 1.4; }
-  .game-tag {
-    display: inline-block; font-size: 0.65rem; font-family: var(--mono);
-    padding: 2px 8px; border-radius: 20px; margin-top: 0.5rem;
-    font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;
-  }
-  .tag-easy { background: rgba(16,185,129,0.15); color: var(--accent3); }
-  .tag-medium { background: rgba(245,158,11,0.15); color: var(--accent4); }
-  .tag-hard { background: rgba(239,68,68,0.15); color: var(--danger); }
-  .tag-timed { background: rgba(124,58,237,0.15); color: #a78bfa; }
+/* ======= BUTTONS ======= */
+.btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: var(--mint); color: var(--bg); border: none;
+  font-family: var(--sans); font-size: .82rem; font-weight: 700;
+  padding: 9px 18px; border-radius: var(--r2); cursor: pointer;
+  transition: all .18s; letter-spacing: .02em; white-space: nowrap;
+}
+.btn:hover { background: var(--mintd); transform: translateY(-1px); box-shadow: 0 4px 14px rgba(0,229,160,.3); }
+.btn:active { transform: translateY(0); box-shadow: none; }
+.btn-ghost { background: var(--s3); color: var(--text); border: 1px solid var(--bd2); }
+.btn-ghost:hover { background: var(--s2); border-color: var(--mint); color: var(--mint); box-shadow: none; }
+.btn-syn { background: var(--syn); color: var(--bg); }
+.btn-syn:hover { background: #9175e0; box-shadow: 0 4px 14px rgba(167,139,250,.3); }
+.btn-danger { background: var(--dec); color: var(--white); }
+.btn-danger:hover { background: #dc5454; box-shadow: 0 4px 14px rgba(248,113,113,.3); }
+.btn-row { display: flex; gap: .5rem; flex-wrap: wrap; align-items: center; }
 
-  /* MODAL / GAME PANEL */
-  .overlay {
-    display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8);
-    z-index: 200; align-items: center; justify-content: center;
-    backdrop-filter: blur(4px); padding: 1rem;
-  }
-  .overlay.open { display: flex; }
-  .modal {
-    background: var(--surface); border: 1px solid var(--border); border-radius: 16px;
-    padding: 2rem; width: 100%; max-width: 680px; max-height: 90vh; overflow-y: auto;
-    position: relative;
-  }
-  .modal-close {
-    position: absolute; top: 1rem; right: 1rem;
-    background: var(--surface2); border: 1px solid var(--border); border-radius: 6px;
-    color: var(--muted); font-size: 1rem; width: 32px; height: 32px;
-    cursor: pointer; display: flex; align-items: center; justify-content: center;
-    transition: all 0.2s;
-  }
-  .modal-close:hover { color: var(--text); border-color: var(--accent); }
-  .modal-title { font-size: 1.3rem; font-weight: 800; margin-bottom: 0.25rem; }
-  .modal-sub { color: var(--muted); font-size: 0.85rem; margin-bottom: 1.5rem; }
+/* ======= LEARN ======= */
+.learn-layout { display: grid; grid-template-columns: 220px 1fr; gap: 1.5rem; margin-top: 1rem; }
+.learn-sidebar { position: sticky; top: 70px; height: fit-content; }
+.l-section-label { font-family: var(--mono); font-size: .6rem; color: var(--muted); text-transform: uppercase; letter-spacing: .12em; padding: 8px 10px 4px; }
+.l-nav-btn {
+  display: block; width: 100%; text-align: left; background: none; border: none;
+  font-family: var(--sans); font-size: .82rem; font-weight: 500; color: var(--muted2);
+  padding: 7px 10px; border-radius: var(--r2); cursor: pointer; transition: all .15s;
+  border-left: 2px solid transparent; margin-bottom: 1px;
+}
+.l-nav-btn:hover { color: var(--text); background: var(--s2); }
+.l-nav-btn.active { color: var(--mint); border-left-color: var(--mint); background: rgba(0,229,160,.07); }
+.l-content > div { display: none; }
+.l-content > div.active { display: block; animation: fadein .25s ease; }
+@keyframes fadein { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:translateY(0); } }
 
-  /* GAME UI ELEMENTS */
-  .eq-display {
-    background: var(--bg); border: 1px solid var(--border); border-radius: 10px;
-    padding: 1.25rem; text-align: center; font-family: var(--mono); font-size: 1.1rem;
-    color: var(--text); margin-bottom: 1.25rem; letter-spacing: 0.03em;
-    min-height: 60px; display: flex; align-items: center; justify-content: center;
-  }
-  .coeff-input {
-    background: var(--surface2); border: 2px solid var(--border); border-radius: 8px;
-    color: var(--text); font-family: var(--mono); font-size: 1rem; padding: 8px 12px;
-    width: 70px; text-align: center; outline: none; transition: border-color 0.2s;
-  }
-  .coeff-input:focus { border-color: var(--accent); }
-  .coeff-input.correct { border-color: var(--accent3); background: rgba(16,185,129,0.1); }
-  .coeff-input.wrong { border-color: var(--danger); background: rgba(239,68,68,0.1); }
-  .btn {
-    background: var(--accent); color: var(--bg); border: none; border-radius: 8px;
-    padding: 10px 20px; font-family: var(--sans); font-size: 0.88rem; font-weight: 700;
-    cursor: pointer; transition: all 0.2s; letter-spacing: 0.02em;
-  }
-  .btn:hover { opacity: 0.9; transform: translateY(-1px); }
-  .btn:active { transform: translateY(0); }
-  .btn-secondary {
-    background: var(--surface2); color: var(--text); border: 1px solid var(--border);
-    border-radius: 8px; padding: 10px 20px; font-family: var(--sans); font-size: 0.88rem;
-    font-weight: 700; cursor: pointer; transition: all 0.2s;
-  }
-  .btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
-  .btn-danger { background: var(--danger); color: white; }
-  .score-bar { display: flex; gap: 1rem; align-items: center; margin-bottom: 1.25rem; flex-wrap: wrap; }
-  .score-chip { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 6px 12px; font-family: var(--mono); font-size: 0.8rem; }
-  .score-chip span { color: var(--accent); font-weight: 700; }
-  .feedback-box {
-    background: var(--surface2); border-radius: 8px; padding: 0.75rem 1rem;
-    font-size: 0.88rem; min-height: 44px; margin-bottom: 1rem;
-    border-left: 3px solid var(--border); transition: all 0.3s;
-  }
-  .feedback-box.good { border-left-color: var(--accent3); color: #6ee7b7; background: rgba(16,185,129,0.08); }
-  .feedback-box.bad { border-left-color: var(--danger); color: #fca5a5; background: rgba(239,68,68,0.08); }
-  .feedback-box.info { border-left-color: var(--accent); color: #a5f3fc; background: rgba(0,229,255,0.05); }
-  .choices-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; margin-bottom: 1rem; }
-  .choice-btn {
-    background: var(--surface2); border: 1px solid var(--border); border-radius: 8px;
-    color: var(--text); font-family: var(--sans); font-size: 0.85rem; font-weight: 600;
-    padding: 10px 14px; cursor: pointer; transition: all 0.2s; text-align: left;
-  }
-  .choice-btn:hover:not(:disabled) { border-color: var(--accent); color: var(--accent); }
-  .choice-btn.correct-choice { border-color: var(--accent3); background: rgba(16,185,129,0.1); color: #6ee7b7; }
-  .choice-btn.wrong-choice { border-color: var(--danger); background: rgba(239,68,68,0.08); color: #fca5a5; }
-  .choice-btn:disabled { cursor: not-allowed; opacity: 0.8; }
-  .progress-bar { height: 4px; background: var(--border); border-radius: 2px; margin-bottom: 1.25rem; overflow: hidden; }
-  .progress-fill { height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent2)); border-radius: 2px; transition: width 0.4s; }
-  .timer-ring { font-family: var(--mono); font-size: 1.2rem; font-weight: 700; color: var(--accent4); }
-  .game-over-screen { text-align: center; padding: 1rem; }
-  .game-over-screen .big-score { font-size: 3rem; font-weight: 800; font-family: var(--mono); color: var(--accent); margin: 1rem 0; }
-  .game-over-screen .grade { font-size: 1rem; color: var(--muted); }
-  .btn-row { display: flex; gap: 0.6rem; flex-wrap: wrap; }
-  .atom-counter { display: flex; gap: 0.5rem; flex-wrap: wrap; margin: 0.75rem 0; }
-  .atom-chip { background: var(--surface2); border: 1px solid var(--border); border-radius: 6px; padding: 4px 10px; font-family: var(--mono); font-size: 0.8rem; }
-  .atom-chip .el { color: var(--accent4); font-weight: 700; }
-  .atom-chip .num { color: var(--text); }
-  .tf-btn { padding: 14px 28px; font-size: 1rem; border-radius: 10px; }
-  .tf-btn.tf-true { background: var(--accent3); color: var(--bg); }
-  .tf-btn.tf-false { background: var(--danger); color: white; }
-  .tf-btn:hover { opacity: 0.85; }
-  .match-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
-  .match-col { display: flex; flex-direction: column; gap: 0.5rem; }
-  .match-item {
-    background: var(--surface2); border: 2px solid var(--border); border-radius: 8px;
-    padding: 10px 14px; cursor: pointer; font-family: var(--mono); font-size: 0.85rem;
-    transition: all 0.2s; text-align: center;
-  }
-  .match-item:hover:not(.matched):not(.selected) { border-color: var(--accent); }
-  .match-item.selected { border-color: var(--accent4); background: rgba(245,158,11,0.1); }
-  .match-item.matched { border-color: var(--accent3); background: rgba(16,185,129,0.1); color: #6ee7b7; cursor: default; }
-  .match-item.wrong-match { border-color: var(--danger); background: rgba(239,68,68,0.1); }
-  .speed-round-display { font-family: var(--mono); font-size: 1.4rem; color: var(--text); text-align: center; margin: 0.75rem 0; }
-  .input-row { display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap; }
-  .text-input {
-    background: var(--surface2); border: 2px solid var(--border); border-radius: 8px;
-    color: var(--text); font-family: var(--mono); font-size: 0.95rem; padding: 8px 14px;
-    outline: none; transition: border-color 0.2s; flex: 1; min-width: 80px;
-  }
-  .text-input:focus { border-color: var(--accent); }
-  .streak-counter { font-family: var(--mono); font-size: 0.85rem; color: var(--accent4); }
-  .hint-text { font-size: 0.8rem; color: var(--muted); font-style: italic; margin-bottom: 0.5rem; }
+/* LEARN CARDS */
+.lcard { background: var(--s1); border: 1px solid var(--bd); border-radius: var(--r); padding: 1.4rem; margin-bottom: 1rem; }
+.lcard h3 { font-size: .78rem; font-weight: 700; color: var(--mint); text-transform: uppercase; letter-spacing: .08em; margin-bottom: .75rem; }
+.lcard p { font-size: .88rem; line-height: 1.7; color: var(--text); margin-bottom: .65rem; }
+.lcard p:last-child { margin-bottom: 0; }
+.eq-block {
+  display: block; font-family: var(--mono); font-size: .88rem; color: #a5f3d0;
+  background: var(--bg); border: 1px solid var(--bd); border-radius: var(--r2);
+  padding: .6rem 1rem; margin: .6rem 0;
+}
+.step { background: var(--s2); border-radius: var(--r2); padding: .9rem 1rem; margin: .5rem 0; }
+.step .snum { font-family: var(--mono); font-size: .65rem; color: var(--sng); font-weight: 700; margin-bottom: 3px; letter-spacing: .1em; }
+.step p { font-size: .85rem; margin: 0; }
+.warn { background: rgba(248,113,113,.06); border: 1px solid rgba(248,113,113,.25); border-radius: var(--r2); padding: .7rem 1rem; margin: .5rem 0; }
+.warn p { font-size: .83rem; color: #fca5a5; margin: 0; }
+.tip { background: rgba(0,229,160,.05); border: 1px solid rgba(0,229,160,.2); border-radius: var(--r2); padding: .7rem 1rem; margin: .5rem 0; }
+.tip p { font-size: .83rem; color: #a5f3d0; margin: 0; }
+.rxn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: .7rem; margin-top: .5rem; }
+.rxn-card { border-radius: var(--r2); padding: .9rem 1rem; border-left: 3px solid; }
+.rxn-card.rsyn { background: rgba(167,139,250,.06); border-color: var(--syn); }
+.rxn-card.rdec { background: rgba(248,113,113,.06); border-color: var(--dec); }
+.rxn-card.rsng { background: rgba(251,191,36,.06); border-color: var(--sng); }
+.rxn-card.rdbl { background: rgba(52,211,153,.06); border-color: var(--dbl); }
+.rxn-card h4 { font-size: .75rem; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; margin-bottom: 4px; }
+.rxn-card.rsyn h4 { color: var(--syn); }
+.rxn-card.rdec h4 { color: var(--dec); }
+.rxn-card.rsng h4 { color: var(--sng); }
+.rxn-card.rdbl h4 { color: var(--dbl); }
+.rxn-card code { font-family: var(--mono); font-size: .78rem; color: var(--text); display: block; margin: 3px 0; }
+.rxn-card p { font-size: .78rem; color: var(--muted2); margin: 0; }
+.rules-list { list-style: none; }
+.rules-list li { padding: 5px 0; border-bottom: 1px solid var(--bd); font-size: .86rem; color: var(--text); }
+.rules-list li:last-child { border-bottom: none; }
+.rules-list li::before { content: '▸ '; color: var(--mint); }
 
-  /* RESPONSIVE */
-  @media (max-width: 700px) {
-    .learn-grid { grid-template-columns: 1fr; }
-    .learn-nav { position: static; display: flex; flex-wrap: wrap; gap: 4px; }
-    .reaction-type-grid { grid-template-columns: 1fr; }
-    .choices-grid { grid-template-columns: 1fr; }
-    .match-grid { grid-template-columns: 1fr; }
-    header { padding: 0 1rem; }
-    .section { padding: 1rem; }
-  }
+/* ======= GAMES ======= */
+.games-header { margin-bottom: 1.25rem; }
+.games-header h2 { font-size: 1.4rem; font-weight: 800; }
+.games-header p { color: var(--muted2); font-size: .85rem; margin-top: .2rem; }
+.games-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px,1fr)); gap: .85rem; }
+.game-card {
+  background: var(--s1); border: 1px solid var(--bd); border-radius: var(--r);
+  padding: 1.1rem; cursor: pointer; transition: all .2s; position: relative; overflow: hidden;
+}
+.game-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: var(--card-accent, var(--mint)); opacity: 0; transition: opacity .2s; border-radius: var(--r) var(--r) 0 0; }
+.game-card:hover { transform: translateY(-2px); border-color: var(--card-accent, var(--bd)); box-shadow: 0 6px 24px rgba(0,0,0,.3); }
+.game-card:hover::before { opacity: 1; }
+.gc-icon { font-size: 1.6rem; margin-bottom: .6rem; display: block; }
+.game-card h3 { font-size: .88rem; font-weight: 700; margin-bottom: .25rem; }
+.game-card p { font-size: .76rem; color: var(--muted2); line-height: 1.45; }
+.gc-footer { display: flex; align-items: center; justify-content: space-between; margin-top: .6rem; }
+.gc-tag { font-family: var(--mono); font-size: .62rem; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; padding: 2px 7px; border-radius: 20px; }
+.tag-easy { background: rgba(52,211,153,.12); color: var(--dbl); }
+.tag-med { background: rgba(251,191,36,.12); color: var(--sng); }
+.tag-hard { background: rgba(248,113,113,.12); color: var(--dec); }
+.tag-time { background: rgba(167,139,250,.12); color: var(--syn); }
+.gc-best { font-family: var(--mono); font-size: .65rem; color: var(--muted); }
 
-  /* SCROLLBAR */
-  ::-webkit-scrollbar { width: 6px; height: 6px; }
-  ::-webkit-scrollbar-track { background: var(--bg); }
-  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
-  ::-webkit-scrollbar-thumb:hover { background: var(--muted); }
+/* ======= MODAL ======= */
+.overlay {
+  display: none; position: fixed; inset: 0; z-index: 200;
+  background: rgba(5,5,8,.85); backdrop-filter: blur(8px);
+  align-items: center; justify-content: center; padding: 1rem;
+}
+.overlay.open { display: flex; animation: fadein .15s ease; }
+.modal {
+  background: var(--s1); border: 1px solid var(--bd2); border-radius: 14px;
+  padding: 1.75rem; width: 100%; max-width: 660px; max-height: 92vh; overflow-y: auto;
+  position: relative; box-shadow: 0 24px 60px rgba(0,0,0,.6);
+}
+.modal-x {
+  position: absolute; top: 1rem; right: 1rem;
+  background: var(--s3); border: 1px solid var(--bd); border-radius: var(--r2);
+  color: var(--muted2); font-size: .9rem; width: 30px; height: 30px;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; transition: all .15s; font-family: var(--mono);
+}
+.modal-x:hover { color: var(--dec); border-color: var(--dec); }
+.modal-title { font-size: 1.2rem; font-weight: 800; margin-bottom: .2rem; }
+.modal-sub { font-size: .8rem; color: var(--muted2); margin-bottom: 1.25rem; }
 
-  /* ANIMATIONS */
-  @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-  .fade-in { animation: fadeIn 0.3s ease; }
-  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.5; } }
-  .pulse { animation: pulse 1.5s infinite; }
-  @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-6px)} 75%{transform:translateX(6px)} }
-  .shake { animation: shake 0.3s ease; }
+/* GAME UI */
+.stats-bar { display: flex; gap: .6rem; align-items: center; flex-wrap: wrap; margin-bottom: 1rem; }
+.stat-chip {
+  background: var(--s2); border: 1px solid var(--bd); border-radius: var(--r2);
+  padding: 4px 10px; font-family: var(--mono); font-size: .75rem; color: var(--muted2);
+}
+.stat-chip span { color: var(--mint); font-weight: 700; }
+.stat-chip.streak span { color: var(--sng); }
+.stat-chip.hints span { color: var(--syn); }
+.prog-wrap { height: 3px; background: var(--bd); border-radius: 2px; margin-bottom: 1.1rem; overflow: hidden; }
+.prog-bar { height: 100%; background: linear-gradient(90deg, var(--mint), var(--syn)); border-radius: 2px; transition: width .4s cubic-bezier(.4,0,.2,1); }
+.timer-bar-wrap { height: 4px; background: var(--bd); border-radius: 2px; margin-bottom: 1rem; overflow: hidden; }
+.timer-bar { height: 100%; background: var(--mint); border-radius: 2px; transition: width .05s linear, background .5s; }
+.eq-display {
+  background: var(--bg); border: 1px solid var(--bd2); border-radius: var(--r);
+  padding: 1.1rem 1.4rem; font-family: var(--mono); font-size: 1.05rem; color: var(--text);
+  text-align: center; margin-bottom: 1.1rem; min-height: 54px;
+  display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 4px;
+  letter-spacing: .02em;
+}
+.type-badge {
+  display: inline-block; font-family: var(--mono); font-size: .65rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: .06em; padding: 2px 8px; border-radius: 20px; margin-bottom: .6rem;
+}
+.tb-syn { background: rgba(167,139,250,.12); color: var(--syn); border: 1px solid rgba(167,139,250,.25); }
+.tb-dec { background: rgba(248,113,113,.12); color: var(--dec); border: 1px solid rgba(248,113,113,.25); }
+.tb-sng { background: rgba(251,191,36,.12); color: var(--sng); border: 1px solid rgba(251,191,36,.25); }
+.tb-dbl { background: rgba(52,211,153,.12); color: var(--dbl); border: 1px solid rgba(52,211,153,.25); }
+.coeff-input {
+  background: var(--s3); border: 2px solid var(--bd2); border-radius: var(--r2);
+  color: var(--text); font-family: var(--mono); font-size: 1rem; font-weight: 700;
+  width: 58px; height: 42px; text-align: center; outline: none;
+  transition: all .18s; -moz-appearance: textfield;
+}
+.coeff-input::-webkit-outer-spin-button, .coeff-input::-webkit-inner-spin-button { -webkit-appearance: none; }
+.coeff-input:focus { border-color: var(--mint); background: rgba(0,229,160,.04); box-shadow: 0 0 0 3px rgba(0,229,160,.12); }
+.coeff-input.ok { border-color: var(--dbl); background: rgba(52,211,153,.08); }
+.coeff-input.err { border-color: var(--dec); background: rgba(248,113,113,.08); }
+.feedback {
+  border-radius: var(--r2); padding: .65rem 1rem; font-size: .85rem; min-height: 40px;
+  border-left: 3px solid var(--bd); background: var(--s2); margin-bottom: .9rem;
+  transition: all .25s; line-height: 1.5;
+}
+.feedback.good { border-left-color: var(--dbl); color: #86efcd; background: rgba(52,211,153,.07); }
+.feedback.bad { border-left-color: var(--dec); color: #fca5a5; background: rgba(248,113,113,.07); }
+.feedback.info { border-left-color: var(--syn); color: #c4b5fd; background: rgba(167,139,250,.07); }
+.choices { display: grid; grid-template-columns: 1fr 1fr; gap: .55rem; margin-bottom: .9rem; }
+.choice {
+  background: var(--s2); border: 1px solid var(--bd2); border-radius: var(--r2);
+  color: var(--text); font-family: var(--sans); font-size: .84rem; font-weight: 600;
+  padding: 10px 14px; cursor: pointer; transition: all .18s; text-align: left;
+}
+.choice:hover:not(:disabled) { border-color: var(--mint); color: var(--mint); background: rgba(0,229,160,.05); }
+.choice.choice-ok { border-color: var(--dbl); background: rgba(52,211,153,.08); color: #86efcd; }
+.choice.choice-err { border-color: var(--dec); background: rgba(248,113,113,.07); color: #fca5a5; }
+.choice:disabled { cursor: default; opacity: .8; }
+.tf-row { display: flex; gap: .75rem; justify-content: center; margin-bottom: .9rem; }
+.tf-t { background: var(--dbl); color: var(--bg); padding: 12px 30px; font-size: .95rem; border-radius: var(--r2); border: none; cursor: pointer; font-family: var(--sans); font-weight: 700; transition: all .18s; }
+.tf-t:hover:not(:disabled) { background: #28c585; box-shadow: 0 4px 14px rgba(52,211,153,.3); }
+.tf-f { background: var(--dec); color: var(--white); padding: 12px 30px; font-size: .95rem; border-radius: var(--r2); border: none; cursor: pointer; font-family: var(--sans); font-weight: 700; transition: all .18s; }
+.tf-f:hover:not(:disabled) { background: #dc5454; box-shadow: 0 4px 14px rgba(248,113,113,.3); }
+.tf-t:disabled, .tf-f:disabled { cursor: default; opacity: .7; }
+.text-inp {
+  background: var(--s3); border: 2px solid var(--bd2); border-radius: var(--r2);
+  color: var(--text); font-family: var(--mono); font-size: .95rem;
+  padding: 8px 14px; outline: none; transition: all .18s; flex: 1; min-width: 100px;
+}
+.text-inp:focus { border-color: var(--mint); box-shadow: 0 0 0 3px rgba(0,229,160,.1); }
+.inp-row { display: flex; gap: .5rem; align-items: center; margin-bottom: .9rem; flex-wrap: wrap; }
+.result-screen { text-align: center; padding: .5rem 0; }
+.result-score { font-family: var(--mono); font-size: 3rem; font-weight: 800; color: var(--mint); line-height: 1; margin: .75rem 0 .25rem; }
+.result-label { font-size: .9rem; color: var(--muted2); margin-bottom: 1.25rem; }
+.result-breakdown { background: var(--s2); border-radius: var(--r2); padding: .9rem 1rem; margin-bottom: 1.25rem; text-align: left; }
+.result-breakdown h4 { font-size: .75rem; font-weight: 700; color: var(--mint); text-transform: uppercase; letter-spacing: .08em; margin-bottom: .5rem; }
+.wrong-item { font-family: var(--mono); font-size: .78rem; color: var(--muted2); padding: 4px 0; border-bottom: 1px solid var(--bd); }
+.wrong-item:last-child { border-bottom: none; }
+.wrong-item strong { color: var(--dec); }
+.wrong-item .correct-ans { color: var(--dbl); }
+
+/* FLASHCARD */
+.flashcard {
+  background: var(--bg); border: 2px solid var(--bd2); border-radius: 12px;
+  min-height: 150px; display: flex; flex-direction: column; align-items: center;
+  justify-content: center; cursor: pointer; padding: 1.5rem; text-align: center;
+  transition: all .3s; margin-bottom: 1rem; perspective: 600px;
+  position: relative; overflow: hidden;
+}
+.flashcard:hover { border-color: var(--mint); }
+.flashcard .fc-label { font-family: var(--mono); font-size: .65rem; color: var(--muted); text-transform: uppercase; letter-spacing: .12em; margin-bottom: .5rem; }
+.flashcard .fc-front { font-size: 1rem; font-weight: 700; color: var(--mint); }
+.flashcard .fc-back { font-size: .88rem; color: var(--text); white-space: pre-line; line-height: 1.65; }
+.fc-progress { display: flex; gap: 6px; justify-content: center; flex-wrap: wrap; margin-bottom: .75rem; }
+.fc-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--bd2); transition: background .2s; }
+.fc-dot.fc-known { background: var(--dbl); }
+.fc-dot.fc-unk { background: var(--dec); }
+.fc-dot.fc-cur { background: var(--mint); }
+
+/* HINTS PANEL */
+.hints-used { font-family: var(--mono); font-size: .72rem; color: var(--syn); margin-bottom: .5rem; }
+
+/* TOAST */
+.toast {
+  position: fixed; bottom: 1.5rem; left: 50%; transform: translateX(-50%) translateY(20px);
+  background: var(--s2); border: 1px solid var(--bd2); border-radius: 8px;
+  padding: 8px 18px; font-size: .85rem; font-weight: 600; z-index: 999;
+  opacity: 0; transition: all .25s; pointer-events: none; white-space: nowrap;
+  box-shadow: 0 8px 24px rgba(0,0,0,.4);
+}
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+.toast.t-good { border-color: rgba(52,211,153,.4); color: var(--dbl); }
+.toast.t-streak { border-color: rgba(251,191,36,.4); color: var(--sng); }
+.toast.t-info { border-color: rgba(167,139,250,.4); color: var(--syn); }
+.toast.t-err { border-color: rgba(248,113,113,.4); color: var(--dec); }
+
+/* PARTICLES */
+.particle {
+  position: fixed; pointer-events: none; border-radius: 50%;
+  animation: pfly .75s ease-out forwards;
+}
+@keyframes pfly {
+  0% { transform: translate(0,0) scale(1); opacity: 1; }
+  100% { transform: translate(var(--tx), var(--ty)) scale(0); opacity: 0; }
+}
+
+/* SCREEN FLASH */
+.flash-overlay {
+  position: fixed; inset: 0; z-index: 9999; pointer-events: none;
+  opacity: 0; transition: opacity .08s;
+}
+.flash-overlay.flash-good { background: rgba(52,211,153,.08); }
+.flash-overlay.flash-bad { background: rgba(248,113,113,.08); }
+
+/* ANIMATIONS */
+@keyframes shake { 0%,100%{transform:translateX(0)} 20%{transform:translateX(-5px)} 60%{transform:translateX(5px)} }
+.shake { animation: shake .3s ease; }
+@keyframes pop { 0%{transform:scale(1)} 40%{transform:scale(1.05)} 100%{transform:scale(1)} }
+.pop { animation: pop .25s ease; }
+@keyframes slide-in { from{opacity:0;transform:translateX(20px)} to{opacity:1;transform:translateX(0)} }
+.slide-in { animation: slide-in .2s ease; }
+
+/* SCROLLBAR */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--bd2); border-radius: 3px; }
+
+/* RESPONSIVE */
+@media (max-width: 680px) {
+  .learn-layout { grid-template-columns: 1fr; }
+  .learn-sidebar { position: static; display: flex; flex-wrap: wrap; gap: 3px; }
+  .l-section-label { display: none; }
+  .rxn-grid { grid-template-columns: 1fr; }
+  .choices { grid-template-columns: 1fr; }
+  header { padding: 0 1rem; }
+  .section { padding: 1.25rem 1rem; }
+}
 </style>
 </head>
 <body>
+
+<div class="flash-overlay" id="flashOverlay"></div>
 
 <header>
   <div class="logo">Chem<span>Balance</span></div>
@@ -303,1333 +400,1364 @@
   </nav>
 </header>
 
-<!-- HOME -->
+<!-- ===== HOME ===== -->
 <div id="home" class="section active">
   <div class="hero">
-    <h1>Master Balancing<br>Chemical Equations</h1>
-    <p>Grade 10 Ontario Chemistry — everything you need, nothing you don't.</p>
-    <div class="hero-badges">
-      <span class="badge">5 Reaction Types</span>
-      <span class="badge">Combustion</span>
-      <span class="badge">Diatomic Elements</span>
-      <span class="badge">Conservation of Mass</span>
-      <span class="badge">12 Games</span>
+    <div class="hero-eyebrow">Grade 10 Chemistry — Ontario Curriculum</div>
+    <h1>Nail Your Balancing Equations Quiz</h1>
+    <p>Laser-focused on the 4 reaction types you actually need. 100+ questions, 8 games, instant feedback.</p>
+    <div class="type-pills">
+      <span class="type-pill pill-syn">⚗️ Synthesis</span>
+      <span class="type-pill pill-dec">💥 Decomposition</span>
+      <span class="type-pill pill-sng">🔀 Single Displacement</span>
+      <span class="type-pill pill-dbl">🔄 Double Displacement</span>
     </div>
   </div>
-  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1rem;margin-top:1rem;">
-    <div class="card" style="border-color:rgba(0,229,255,0.3);cursor:pointer;" onclick="showSection('learn')">
-      <div style="font-size:2rem;margin-bottom:0.5rem;">📘</div>
-      <h3>Learn First</h3>
-      <p>All the rules, reaction types, notation, and the full balancing method. Start here if you need a refresher.</p>
-      <button class="btn" style="margin-top:0.75rem;" onclick="event.stopPropagation();showSection('learn')">Open Notes →</button>
+  <div class="home-grid">
+    <div class="home-card c-learn" onclick="showSection('learn')">
+      <span class="icon">📘</span>
+      <h3>Study the Notes</h3>
+      <p>Clear explanations of all 4 reaction types, with examples, rules, and traps.</p>
+      <button class="btn" onclick="event.stopPropagation();showSection('learn')">Open Notes →</button>
     </div>
-    <div class="card" style="border-color:rgba(124,58,237,0.3);cursor:pointer;" onclick="showSection('games')">
-      <div style="font-size:2rem;margin-bottom:0.5rem;">🎮</div>
-      <h3>Play & Practice</h3>
-      <p>12 different games — from identifying reactions to timed speed rounds. Repetition is how it sticks.</p>
-      <button class="btn" style="margin-top:0.75rem;background:var(--accent2);" onclick="event.stopPropagation();showSection('games')">Play Games →</button>
+    <div class="home-card c-games" onclick="showSection('games')">
+      <span class="icon">🎮</span>
+      <h3>Play the Games</h3>
+      <p>8 different games from easy identification to hard timed balancing. All randomized.</p>
+      <button class="btn btn-syn" onclick="event.stopPropagation();showSection('games')">Play Now →</button>
     </div>
-    <div class="card" style="border-color:rgba(16,185,129,0.3);">
-      <div style="font-size:2rem;margin-bottom:0.5rem;">⚡</div>
-      <h3>Quick Summary</h3>
-      <p style="margin-bottom:0.5rem;"><strong>Rule #1:</strong> Only change coefficients (big numbers in front), never subscripts.</p>
-      <p style="margin-bottom:0.5rem;"><strong>Rule #2:</strong> Balance metals → non-metals → polyatomics → H → O (last).</p>
-      <p><strong>Rule #3:</strong> Diatomic elements: H₂ N₂ O₂ F₂ Cl₂ Br₂ I₂ — always paired.</p>
+    <div class="home-card c-tips">
+      <span class="icon">⚡</span>
+      <h3>Quick Rules</h3>
+      <ul class="quick-rules">
+        <li>Only change <strong>coefficients</strong> — never subscripts</li>
+        <li>Balance: metals → non-metals → polyatomics → H → O</li>
+        <li>Diatomic: H₂ N₂ O₂ F₂ Cl₂ Br₂ I₂</li>
+        <li>Polyatomic unchanged? Treat as one unit</li>
+        <li>Check <em>every</em> atom after you finish</li>
+      </ul>
+    </div>
+  </div>
+  <div style="margin-top:1.5rem;background:var(--s1);border:1px solid var(--bd);border-radius:var(--r);padding:1.25rem;">
+    <p style="font-family:var(--mono);font-size:.72rem;color:var(--muted);margin-bottom:.5rem;">⌨️ KEYBOARD SHORTCUTS (inside any game)</p>
+    <div style="display:flex;gap:1rem;flex-wrap:wrap;">
+      <span style="font-size:.8rem;color:var(--muted2);"><span class="kb-hint">Enter</span> Submit answer</span>
+      <span style="font-size:.8rem;color:var(--muted2);"><span class="kb-hint">H</span> Use a hint</span>
+      <span style="font-size:.8rem;color:var(--muted2);"><span class="kb-hint">S</span> Skip question</span>
+      <span style="font-size:.8rem;color:var(--muted2);"><span class="kb-hint">Esc</span> Close game</span>
     </div>
   </div>
 </div>
 
-<!-- LEARN -->
+<!-- ===== LEARN ===== -->
 <div id="learn" class="section">
-  <div class="learn-grid">
-    <div class="learn-nav">
-      <button class="learn-nav-item active" onclick="showLearn('l-method')">Balancing Method</button>
-      <button class="learn-nav-item" onclick="showLearn('l-rules')">Rules & Traps</button>
-      <button class="learn-nav-item" onclick="showLearn('l-diatomic')">Diatomic Elements</button>
-      <button class="learn-nav-item" onclick="showLearn('l-notation')">Notation (aq, s, l, g)</button>
-      <button class="learn-nav-item" onclick="showLearn('l-conservation')">Conservation of Mass</button>
-      <button class="learn-nav-item" onclick="showLearn('l-types')">Reaction Types</button>
-      <button class="learn-nav-item" onclick="showLearn('l-synthesis')">Synthesis</button>
-      <button class="learn-nav-item" onclick="showLearn('l-decomp')">Decomposition</button>
-      <button class="learn-nav-item" onclick="showLearn('l-single')">Single Displacement</button>
-      <button class="learn-nav-item" onclick="showLearn('l-double')">Double Displacement</button>
-      <button class="learn-nav-item" onclick="showLearn('l-combustion')">Combustion</button>
-      <button class="learn-nav-item" onclick="showLearn('l-poly')">Polyatomic Ions</button>
+  <div class="learn-layout">
+    <div class="learn-sidebar">
+      <div class="l-section-label">Method</div>
+      <button class="l-nav-btn active" onclick="showLearn('lm',this)">Balancing Method</button>
+      <button class="l-nav-btn" onclick="showLearn('lr',this)">Rules &amp; Traps</button>
+      <div class="l-section-label">Reactions</div>
+      <button class="l-nav-btn" onclick="showLearn('lt',this)">All 4 Types</button>
+      <button class="l-nav-btn" onclick="showLearn('ls',this)">⚗️ Synthesis</button>
+      <button class="l-nav-btn" onclick="showLearn('ld',this)">💥 Decomposition</button>
+      <button class="l-nav-btn" onclick="showLearn('lsi',this)">🔀 Single Displacement</button>
+      <button class="l-nav-btn" onclick="showLearn('ldi',this)">🔄 Double Displacement</button>
+      <div class="l-section-label">Extra</div>
+      <button class="l-nav-btn" onclick="showLearn('ln',this)">Notation &amp; Conservation</button>
+      <button class="l-nav-btn" onclick="showLearn('lp',this)">Polyatomic Ions</button>
     </div>
-    <div class="learn-content">
-
-      <div id="l-method" class="active fade-in">
-        <div class="card">
-          <h3>The Balancing Method (5 Steps)</h3>
-          <p>Every time you balance an equation, use this exact order. Do not deviate.</p>
-          <div class="step-box"><div class="step-num">STEP 1</div><p>Write the equation with all correct chemical formulas for reactants and products.</p></div>
-          <div class="step-box"><div class="step-num">STEP 2</div><p>Balance atoms that are NOT O, H, or polyatomic first. Focus on elements that appear in one compound on each side first.</p></div>
-          <div class="step-box"><div class="step-num">STEP 3</div><p>Balance polyatomic ions next — if a polyatomic ion appears unchanged on both sides, treat it as a single unit.</p></div>
-          <div class="step-box"><div class="step-num">STEP 4</div><p>Balance hydrogen (H) next.</p></div>
-          <div class="step-box"><div class="step-num">STEP 5</div><p>Balance oxygen (O) last. Then do a full atom count check on both sides.</p></div>
+    <div class="l-content">
+      <div id="lm" class="active">
+        <div class="lcard">
+          <h3>The 5-Step Balancing Method</h3>
+          <p>Use this exact order every single time. Do not deviate.</p>
+          <div class="step"><div class="snum">STEP 1</div><p>Write the correct chemical formulas for all reactants and products.</p></div>
+          <div class="step"><div class="snum">STEP 2</div><p>Balance atoms that are NOT O, H, or polyatomic first. Focus on metals, then non-metals.</p></div>
+          <div class="step"><div class="snum">STEP 3</div><p>Balance polyatomic ions — if one appears unchanged on both sides, treat it as a single unit.</p></div>
+          <div class="step"><div class="snum">STEP 4</div><p>Balance hydrogen (H) next.</p></div>
+          <div class="step"><div class="snum">STEP 5</div><p>Balance oxygen (O) last. Then do a complete atom count on both sides to verify.</p></div>
         </div>
-        <div class="card">
-          <h3>Worked Example</h3>
-          <p><strong>Unbalanced:</strong></p>
-          <code class="formula-box">C₃H₈ + O₂ → CO₂ + H₂O</code>
-          <p><strong>Step 1 — Balance Carbon:</strong> There are 3 C on the left → put 3 in front of CO₂</p>
-          <code class="formula-box">C₃H₈ + O₂ → 3CO₂ + H₂O</code>
-          <p><strong>Step 2 — Balance Hydrogen:</strong> There are 8 H on left → need 4×H₂O</p>
-          <code class="formula-box">C₃H₈ + O₂ → 3CO₂ + 4H₂O</code>
-          <p><strong>Step 3 — Balance Oxygen (last):</strong> Right side: 3×2 + 4×1 = 10 O → need 5×O₂</p>
-          <code class="formula-box">C₃H₈ + 5O₂ → 3CO₂ + 4H₂O  ✓</code>
-          <p>Check: C=3✓  H=8✓  O=10✓</p>
+        <div class="lcard">
+          <h3>Worked Example — Double Displacement</h3>
+          <p>Unbalanced:</p>
+          <code class="eq-block">Pb(NO₃)₂ + KI → PbI₂ + KNO₃</code>
+          <p><strong>Step 1 — NO₃ is a polyatomic ion unchanged on both sides → treat as one unit.</strong></p>
+          <p>Left side has 2 NO₃ groups. Right side has 1. Fix K and NO₃:</p>
+          <code class="eq-block">Pb(NO₃)₂ + ? KI → PbI₂ + ? KNO₃</code>
+          <p>Pb: 1 on each side ✓. I: 2 on right → need 2 KI. NO₃: 2 on left → need 2 KNO₃. K: 2 on each side ✓.</p>
+          <code class="eq-block">Pb(NO₃)₂ + 2KI → PbI₂ + 2KNO₃  ✓</code>
+          <p>Check: Pb=1✓ N=2✓ O=6✓ K=2✓ I=2✓</p>
         </div>
       </div>
-
-      <div id="l-rules" class="fade-in">
-        <div class="card">
+      <div id="lr">
+        <div class="lcard">
           <h3>The Golden Rules</h3>
-          <ul class="rule-list">
-            <li>ONLY add or change coefficients (numbers in front of formulas)</li>
-            <li>NEVER change subscripts — that changes the substance entirely</li>
-            <li>Use lowest whole-number coefficients in final answer</li>
-            <li>If coefficient is 1, you don't write it (1H₂O = just H₂O)</li>
-            <li>Always do a final count of every atom on both sides</li>
-            <li>If stuck, try doubling your current coefficients</li>
+          <ul class="rules-list">
+            <li>ONLY change coefficients (big numbers in front) — never subscripts</li>
+            <li>Coefficients must be lowest whole numbers in the final answer</li>
+            <li>If coefficient is 1, you do not write it out</li>
+            <li>Always verify your answer by counting every atom type</li>
+            <li>If stuck, try doubling all coefficients on one side</li>
+            <li>Use LCM when you need to match an odd number of atoms</li>
           </ul>
         </div>
-        <div class="card">
-          <h3>Common Traps on Tests</h3>
-          <div class="warn-box"><p>❌ Changing H₂O to H₃O to "balance" hydrogen — this is illegal. H₃O is a completely different substance.</p></div>
-          <div class="warn-box"><p>❌ Forgetting to multiply ALL atoms in a formula. 2Fe₂O₃ means 4 Fe and 6 O, not 2 of each.</p></div>
-          <div class="warn-box"><p>❌ Balancing oxygen before hydrogen in a hydrocarbon combustion reaction.</p></div>
-          <div class="warn-box"><p>❌ Forgetting that O₂ and H₂ are diatomic — writing them as single atoms.</p></div>
-          <div class="tip-box"><p>✅ TIP: If you get stuck and can't balance, check that you have the right chemical formulas first — the formulas might have an error.</p></div>
-          <div class="tip-box"><p>✅ TIP: For double displacement, start balancing with the most complicated-looking group (usually the polyatomic).</p></div>
+        <div class="lcard">
+          <h3>Common Exam Traps</h3>
+          <div class="warn"><p>❌ Writing H₃O instead of adding a coefficient to H₂O. Changing subscripts changes the substance.</p></div>
+          <div class="warn"><p>❌ Forgetting to multiply ALL atoms. 2Fe₂O₃ = 4 Fe and 6 O — not 2 of each.</p></div>
+          <div class="warn"><p>❌ Treating a polyatomic that breaks apart as a single unit (only works if it stays identical on both sides).</p></div>
+          <div class="warn"><p>❌ Forgetting brackets: Ca(OH)₂ = 2 OH groups = 2 O atoms and 2 H atoms.</p></div>
+          <div class="tip"><p>✅ Start double displacement with the most complex group (usually the polyatomic ion).</p></div>
+          <div class="tip"><p>✅ After every adjustment, recount ALL atoms — not just the one you fixed.</p></div>
         </div>
       </div>
-
-      <div id="l-diatomic" class="fade-in">
-        <div class="card">
-          <h3>Diatomic Elements</h3>
-          <p>These 7 elements <em>always</em> exist as pairs of two atoms when they appear alone in nature. You MUST write them with a subscript 2.</p>
-          <div class="diatomic-grid">
-            <div class="diatom-pill">H₂</div>
-            <div class="diatom-pill">N₂</div>
-            <div class="diatom-pill">O₂</div>
-            <div class="diatom-pill">F₂</div>
-            <div class="diatom-pill">Cl₂</div>
-            <div class="diatom-pill">Br₂</div>
-            <div class="diatom-pill">I₂</div>
+      <div id="lt">
+        <div class="lcard">
+          <h3>The 4 Reaction Types</h3>
+          <div class="rxn-grid">
+            <div class="rxn-card rsyn"><h4>Synthesis</h4><code>A + B → AB</code><p>Two or more reactants form ONE product.</p></div>
+            <div class="rxn-card rdec"><h4>Decomposition</h4><code>AB → A + B</code><p>ONE reactant breaks into two or more products.</p></div>
+            <div class="rxn-card rsng"><h4>Single Displacement</h4><code>A + BC → AC + B</code><p>One element replaces a similar element in a compound.</p></div>
+            <div class="rxn-card rdbl"><h4>Double Displacement</h4><code>AB + CD → AD + CB</code><p>Two ionic compounds swap their ions with each other.</p></div>
           </div>
-          <div class="tip-box" style="margin-top:0.75rem;"><p>Memory trick: <strong>"Have No Fear Of Ice Cold Beverages"</strong> → H, N, F, O, I, Cl, Br</p></div>
-          <p style="margin-top:0.75rem;">If a question says "hydrogen gas" on its own, you write <strong>H₂</strong>, not H. Same with oxygen gas → <strong>O₂</strong>.</p>
         </div>
-        <div class="card">
-          <h3>Why Does This Matter?</h3>
-          <p>When balancing: <code class="formula-box">H₂ + O₂ → H₂O</code> You start with 2 O atoms on the left (because O₂). If you forgot the subscript and wrote "O" you'd count 1 and balance everything wrong.</p>
-        </div>
-      </div>
-
-      <div id="l-notation" class="fade-in">
-        <div class="card">
-          <h3>State Notation (Physical States)</h3>
-          <p>Written in brackets after a chemical formula. They describe the physical state of each substance in the reaction.</p>
-          <div class="notation-grid">
-            <div class="notate-pill"><span class="sym">(s)</span><span class="def"><strong>Solid</strong> — fixed shape, doesn't flow</span></div>
-            <div class="notate-pill"><span class="sym">(l)</span><span class="def"><strong>Liquid</strong> — flows, not in water</span></div>
-            <div class="notate-pill"><span class="sym">(g)</span><span class="def"><strong>Gas</strong> — spread out, no fixed shape</span></div>
-            <div class="notate-pill"><span class="sym">(aq)</span><span class="def"><strong>Aqueous</strong> — dissolved in water</span></div>
-          </div>
-          <div class="tip-box" style="margin-top:0.75rem;"><p>State notation does NOT affect how you balance. It's purely informational about the physical state of each substance.</p></div>
-          <p style="margin-top:0.75rem;">Example: <code class="formula-box">2Na(s) + 2H₂O(l) → 2NaOH(aq) + H₂(g)</code></p>
+        <div class="lcard">
+          <h3>Quick ID Guide</h3>
+          <div class="step"><div class="snum">SYNTHESIS CLUE</div><p>Exactly ONE product in the equation → Synthesis.</p></div>
+          <div class="step"><div class="snum">DECOMPOSITION CLUE</div><p>Exactly ONE reactant → Decomposition.</p></div>
+          <div class="step"><div class="snum">SINGLE DISPLACEMENT CLUE</div><p>One element alone reacts with a compound, and one element comes out alone as a product.</p></div>
+          <div class="step"><div class="snum">DOUBLE DISPLACEMENT CLUE</div><p>Two compounds react and produce two new compounds. Ions swap. Often produces a precipitate (s).</p></div>
         </div>
       </div>
-
-      <div id="l-conservation" class="fade-in">
-        <div class="card">
+      <div id="ls">
+        <div class="lcard">
+          <h3>⚗️ Synthesis Reactions</h3>
+          <p>Two or more simpler reactants combine to form ONE more complex product. Think of it as building.</p>
+          <code class="eq-block">General: A + B → AB</code>
+        </div>
+        <div class="lcard">
+          <h3>Synthesis Examples</h3>
+          <code class="eq-block">2Na(s) + Cl₂(g) → 2NaCl(s)</code>
+          <code class="eq-block">2Mg(s) + O₂(g) → 2MgO(s)</code>
+          <code class="eq-block">N₂(g) + 3H₂(g) → 2NH₃(g)</code>
+          <code class="eq-block">4Al(s) + 3O₂(g) → 2Al₂O₃(s)</code>
+          <code class="eq-block">CaO(s) + H₂O(l) → Ca(OH)₂(aq)</code>
+          <div class="tip"><p>If you see exactly ONE product → it is synthesis. No exceptions.</p></div>
+        </div>
+        <div class="lcard">
+          <h3>Balancing Synthesis Tip</h3>
+          <p>Balance metals first. Then non-metals. For binary compounds (e.g. NaCl, MgO), the formula tells you the ratio of ions — use that to set coefficients.</p>
+          <p>Example: Al₂O₃ means 2 Al and 3 O per formula unit. To get whole-number coefficients for O₂ (gives 2 O per molecule), find the LCM of 3 and 2 = 6 → need 2×Al₂O₃ (6 O) and 3×O₂ (6 O), which means 4 Al.</p>
+        </div>
+      </div>
+      <div id="ld">
+        <div class="lcard">
+          <h3>💥 Decomposition Reactions</h3>
+          <p>The exact opposite of synthesis. ONE complex reactant breaks down into two or more simpler products.</p>
+          <code class="eq-block">General: AB → A + B</code>
+          <div class="tip"><p>If you see exactly ONE reactant → it is decomposition. No exceptions.</p></div>
+        </div>
+        <div class="lcard">
+          <h3>Decomposition Examples</h3>
+          <code class="eq-block">2H₂O(l) → 2H₂(g) + O₂(g)</code>
+          <code class="eq-block">2HgO(s) → 2Hg(l) + O₂(g)</code>
+          <code class="eq-block">2KClO₃(s) → 2KCl(s) + 3O₂(g)</code>
+          <code class="eq-block">CaCO₃(s) → CaO(s) + CO₂(g)</code>
+          <code class="eq-block">2NH₃(g) → N₂(g) + 3H₂(g)</code>
+          <code class="eq-block">H₂CO₃(aq) → H₂O(l) + CO₂(g)</code>
+        </div>
+        <div class="lcard">
+          <h3>Decomposition Energy Note</h3>
+          <p>Decomposition reactions almost always require an input of energy (heat, electricity, or light) to break the compound apart. This is often shown with Δ (delta) above the arrow, meaning heat is applied. You don't need to balance the energy — just the atoms.</p>
+        </div>
+      </div>
+      <div id="lsi">
+        <div class="lcard">
+          <h3>🔀 Single Displacement Reactions</h3>
+          <p>One element replaces a similar element inside a compound. A more reactive element kicks out a less reactive one.</p>
+          <code class="eq-block">General: A + BC → AC + B</code>
+        </div>
+        <div class="lcard">
+          <h3>Two Situations</h3>
+          <div class="step"><div class="snum">SITUATION 1 — Metal displaces Metal</div><p>A more reactive metal replaces a less reactive metal in a compound.</p></div>
+          <code class="eq-block">Zn(s) + CuSO₄(aq) → ZnSO₄(aq) + Cu(s)</code>
+          <div class="step"><div class="snum">SITUATION 2 — Non-metal displaces Non-metal</div><p>A more reactive halogen replaces a less reactive halogen.</p></div>
+          <code class="eq-block">Cl₂(aq) + 2KI(aq) → I₂(aq) + 2KCl(aq)</code>
+          <div class="step"><div class="snum">EXCEPTION — Metal displaces Hydrogen from Acid</div><p>Hydrogen in acids forms H⁺ ions just like metals, so a reactive metal can displace it.</p></div>
+          <code class="eq-block">Zn(s) + 2HCl(aq) → ZnCl₂(aq) + H₂(g)</code>
+        </div>
+        <div class="lcard">
+          <h3>Single Displacement Examples</h3>
+          <code class="eq-block">Fe(s) + CuSO₄(aq) → FeSO₄(aq) + Cu(s)</code>
+          <code class="eq-block">Mg(s) + 2HCl(aq) → MgCl₂(aq) + H₂(g)</code>
+          <code class="eq-block">Cu(s) + 2AgNO₃(aq) → Cu(NO₃)₂(aq) + 2Ag(s)</code>
+          <code class="eq-block">Br₂(aq) + 2KI(aq) → I₂(aq) + 2KBr(aq)</code>
+          <code class="eq-block">2Na(s) + 2H₂O(l) → 2NaOH(aq) + H₂(g)</code>
+        </div>
+      </div>
+      <div id="ldi">
+        <div class="lcard">
+          <h3>🔄 Double Displacement Reactions</h3>
+          <p>Two ionic compounds react and exchange their cations (positive ions), producing two new compounds. Think of it as a swap.</p>
+          <code class="eq-block">General: AB + CD → AD + CB</code>
+          <p>The positive ion from compound 1 swaps partner with the positive ion from compound 2.</p>
+        </div>
+        <div class="lcard">
+          <h3>Double Displacement Examples</h3>
+          <code class="eq-block">AgNO₃(aq) + NaCl(aq) → AgCl(s) + NaNO₃(aq)</code>
+          <code class="eq-block">BaCl₂(aq) + Na₂SO₄(aq) → BaSO₄(s) + 2NaCl(aq)</code>
+          <code class="eq-block">CuSO₄(aq) + 2NaOH(aq) → Cu(OH)₂(s) + Na₂SO₄(aq)</code>
+          <code class="eq-block">HCl(aq) + NaOH(aq) → NaCl(aq) + H₂O(l)</code>
+          <code class="eq-block">FeCl₃(aq) + 3NaOH(aq) → Fe(OH)₃(s) + 3NaCl(aq)</code>
+          <div class="tip"><p>Often produces a precipitate (s) — an insoluble solid that forms in solution. This is a key sign of double displacement.</p></div>
+        </div>
+        <div class="lcard">
+          <h3>Balancing Double Displacement</h3>
+          <p>Start with the polyatomic ion — if it stays intact on both sides, treat it as one unit. Balance it first, then adjust the simpler ions around it.</p>
+          <p>For acid-base neutralization (HX + MOH → salt + H₂O): count the H and OH groups needed to cancel each other out.</p>
+        </div>
+      </div>
+      <div id="ln">
+        <div class="lcard">
           <h3>Law of Conservation of Mass</h3>
-          <p>Proposed by Antoine Lavoisier in 1789. It states:</p>
-          <div class="tip-box"><p style="font-size:1rem;font-weight:700;">"Matter cannot be created or destroyed in a chemical reaction."</p></div>
-          <p>This is the entire reason we balance equations. If you start with 4 hydrogen atoms, you must end with exactly 4 hydrogen atoms. Nothing disappears and nothing new appears — it only rearranges.</p>
-          <p style="margin-top:0.75rem;">This is also called the <strong>Law of Conservation of Matter</strong>. Your teacher may call it either name on the test.</p>
+          <p>Proposed by Antoine Lavoisier. States: <strong>Matter cannot be created or destroyed in a chemical reaction.</strong></p>
+          <p>This is why we balance equations — every atom on the left must also appear on the right. The total mass of reactants equals the total mass of products.</p>
+          <div class="tip"><p>This is the scientific law behind everything. If the teacher asks "what law requires balanced equations?" → Law of Conservation of Mass.</p></div>
         </div>
-        <div class="card">
-          <h3>What This Means on a Test</h3>
-          <ul class="rule-list">
-            <li>Atoms on left side = atoms on right side (always)</li>
-            <li>Total mass of reactants = total mass of products</li>
-            <li>Balancing equations IS conservation of mass in action</li>
-            <li>Subscripts show bonding (fixed) — coefficients show amounts (variable)</li>
-          </ul>
-        </div>
-      </div>
-
-      <div id="l-types" class="fade-in">
-        <div class="card">
-          <h3>The 5 Reaction Types — Quick Reference</h3>
-          <div class="reaction-type-grid" style="grid-template-columns:1fr;">
-            <div class="rt-card syn"><h4>Synthesis</h4><code>A + B → AB</code><p>Two or more reactants join to form ONE product</p></div>
-            <div class="rt-card dec"><h4>Decomposition</h4><code>AB → A + B</code><p>ONE reactant breaks into two or more products</p></div>
-            <div class="rt-card sng"><h4>Single Displacement</h4><code>A + BC → AC + B</code><p>One element replaces another in a compound</p></div>
-            <div class="rt-card dbl"><h4>Double Displacement</h4><code>AB + CD → AD + CB</code><p>Two compounds swap their ions/atoms with each other</p></div>
-            <div class="rt-card com"><h4>Combustion</h4><code>Fuel + O₂ → oxides + energy</code><p>Rapid reaction with oxygen, releasing energy</p></div>
+        <div class="lcard">
+          <h3>State Notation</h3>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-top:.25rem;">
+            <div class="step"><div class="snum">(s)</div><p>Solid</p></div>
+            <div class="step"><div class="snum">(l)</div><p>Liquid</p></div>
+            <div class="step"><div class="snum">(g)</div><p>Gas</p></div>
+            <div class="step"><div class="snum">(aq)</div><p>Aqueous — dissolved in water</p></div>
           </div>
+          <div class="tip"><p>State notation does NOT affect how you balance. It is purely informational.</p></div>
         </div>
       </div>
-
-      <div id="l-synthesis" class="fade-in">
-        <div class="card">
-          <h3>Synthesis Reactions</h3>
-          <p>Two or more simple reactants combine to form ONE more complex product.</p>
-          <code class="formula-box">General: A + B → AB</code>
-          <p><strong>Examples:</strong></p>
-          <code class="formula-box">2Na(s) + Cl₂(g) → 2NaCl(s)</code>
-          <code class="formula-box">2H₂(g) + O₂(g) → 2H₂O(l)</code>
-          <code class="formula-box">CaO(s) + H₂O(l) → Ca(OH)₂(aq)</code>
-          <div class="tip-box"><p>If you see exactly ONE product: it's synthesis.</p></div>
-          <p style="margin-top:0.75rem;">Note: Elemental combustion is a specialized form of synthesis — a metal + O₂ → metal oxide. The difference is combustion releases energy rapidly.</p>
+      <div id="lp">
+        <div class="lcard">
+          <h3>Polyatomic Ions — The Big Rule</h3>
+          <p>A polyatomic ion is a group of atoms that acts as a single charged unit. <strong>If it appears unchanged on BOTH sides of the equation, treat it as a single unit when counting.</strong></p>
+          <div class="warn"><p>⚠️ If the polyatomic ion gets broken up (which doesn't happen in the 4 reaction types we study), you must count individual atoms.</p></div>
         </div>
-      </div>
-
-      <div id="l-decomp" class="fade-in">
-        <div class="card">
-          <h3>Decomposition Reactions</h3>
-          <p>ONE complex reactant breaks down into two or more simpler products. The opposite of synthesis.</p>
-          <code class="formula-box">General: AB → A + B</code>
-          <p><strong>Examples:</strong></p>
-          <code class="formula-box">2H₂O(l) → 2H₂(g) + O₂(g)</code>
-          <code class="formula-box">CaCO₃(s) → CaO(s) + CO₂(g)</code>
-          <code class="formula-box">2HgO(s) → 2Hg(l) + O₂(g)</code>
-          <div class="tip-box"><p>If you see exactly ONE reactant: it's decomposition.</p></div>
-          <p style="margin-top:0.75rem;">Decomposition reactions often require energy input (heat, electricity, or light) to break the compound apart.</p>
-        </div>
-      </div>
-
-      <div id="l-single" class="fade-in">
-        <div class="card">
-          <h3>Single Displacement Reactions</h3>
-          <p>One element replaces a similar element inside a compound.</p>
-          <code class="formula-box">General: A + BC → AC + B</code>
-          <p>This happens in two situations:</p>
-          <div class="step-box"><div class="step-num">SITUATION 1</div><p>Metal displaces a metal — a more reactive metal kicks out a less reactive one.</p></div>
-          <code class="formula-box">Li(s) + NaCl(aq) → LiCl(aq) + Na(s)</code>
-          <div class="step-box"><div class="step-num">SITUATION 2</div><p>Non-metal displaces a non-metal — a more reactive non-metal kicks out a less reactive one.</p></div>
-          <code class="formula-box">F₂(aq) + 2KI(aq) → I₂(aq) + 2KF(aq)</code>
-          <div class="warn-box"><p>⚠️ Exception: A metal can also displace hydrogen from an acid, because hydrogen forms a positive ion (H⁺) just like metals do.</p></div>
-          <code class="formula-box">Zn + 2HCl → H₂ + ZnCl₂</code>
-        </div>
-      </div>
-
-      <div id="l-double" class="fade-in">
-        <div class="card">
-          <h3>Double Displacement Reactions</h3>
-          <p>Two ionic compounds swap their positive ions (cations) with each other to form two new compounds. Think of it as a double swap.</p>
-          <code class="formula-box">General: AB + CD → AD + CB</code>
-          <p>The cations and anions (positive and negative ions) trade partners.</p>
-          <code class="formula-box">Pb(NO₃)₂(aq) + 2KI(aq) → PbI₂(s) + 2KNO₃(aq)</code>
-          <div class="tip-box"><p>When balancing double displacement: start with the most complicated looking group first — usually the polyatomic ion.</p></div>
-          <p style="margin-top:0.75rem;"><strong>Key sign:</strong> Two compounds on the reactant side, two compounds on the product side. Often produces a precipitate (solid) shown with (s).</p>
-        </div>
-      </div>
-
-      <div id="l-combustion" class="fade-in">
-        <div class="card">
-          <h3>Combustion Reactions</h3>
-          <p>A fuel reacts rapidly with oxygen (O₂), releasing a large amount of energy. The products are oxides (usually CO₂ and H₂O for hydrocarbons).</p>
-        </div>
-        <div class="card">
-          <h3>Complete Combustion (Hydrocarbons)</h3>
-          <p>Enough oxygen is present to fully react all the fuel.</p>
-          <code class="formula-box">CₓHᵧ + O₂ → CO₂ + H₂O + energy</code>
-          <p><strong>Example:</strong></p>
-          <code class="formula-box">C₃H₈ + 5O₂ → 3CO₂ + 4H₂O + energy</code>
-          <p style="margin-top:0.5rem;"><strong>Balance order:</strong> Carbon → Hydrogen → Oxygen (always last for combustion)</p>
-        </div>
-        <div class="card">
-          <h3>Incomplete Combustion</h3>
-          <p>Not enough oxygen — produces extra harmful products.</p>
-          <code class="formula-box">CₓHᵧ + O₂ → CO₂ + H₂O + CO + C + energy</code>
-          <div class="warn-box"><p>⚠️ CO (carbon monoxide) is produced — colourless, odourless, and deadly. This is why running engines in enclosed spaces is dangerous.</p></div>
-        </div>
-        <div class="card">
-          <h3>Elemental Combustion</h3>
-          <p>Metals and some non-metals (carbon, phosphorus) also combust.</p>
-          <code class="formula-box">General: Element + O₂ → Oxide + energy</code>
-          <code class="formula-box">4Fe + 3O₂ → 2Fe₂O₃ + energy</code>
-          <code class="formula-box">2H₂(g) + O₂(g) → 2H₂O(g) + energy</code>
-          <div class="tip-box"><p>Elemental combustion is a specialized synthesis reaction — but it's classified as combustion because of the oxygen + rapid energy release.</p></div>
-        </div>
-      </div>
-
-      <div id="l-poly" class="fade-in">
-        <div class="card">
-          <h3>Polyatomic Ions</h3>
-          <p>A polyatomic ion is a group of atoms that act as a single charged unit. Common ones you'll see:</p>
-          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:8px;margin-top:0.5rem;">
-            <div class="step-box"><div class="step-num">SULFATE</div><p>SO₄²⁻</p></div>
-            <div class="step-box"><div class="step-num">NITRATE</div><p>NO₃⁻</p></div>
-            <div class="step-box"><div class="step-num">PHOSPHATE</div><p>PO₄³⁻</p></div>
-            <div class="step-box"><div class="step-num">HYDROXIDE</div><p>OH⁻</p></div>
-            <div class="step-box"><div class="step-num">CARBONATE</div><p>CO₃²⁻</p></div>
-            <div class="step-box"><div class="step-num">AMMONIUM</div><p>NH₄⁺</p></div>
+        <div class="lcard">
+          <h3>Common Polyatomic Ions</h3>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:.5rem;">
+            <div class="step"><div class="snum">Nitrate</div><p>NO₃⁻</p></div>
+            <div class="step"><div class="snum">Sulfate</div><p>SO₄²⁻</p></div>
+            <div class="step"><div class="snum">Carbonate</div><p>CO₃²⁻</p></div>
+            <div class="step"><div class="snum">Hydroxide</div><p>OH⁻</p></div>
+            <div class="step"><div class="snum">Phosphate</div><p>PO₄³⁻</p></div>
+            <div class="step"><div class="snum">Ammonium</div><p>NH₄⁺</p></div>
           </div>
-        </div>
-        <div class="card">
-          <h3>The Polyatomic Trick</h3>
-          <p>If a polyatomic ion appears <strong>unchanged</strong> on both sides of the equation, treat it as a single unit when counting and balancing.</p>
-          <code class="formula-box">Pb(NO₃)₂ + 2KI → PbI₂ + 2KNO₃</code>
-          <p>The NO₃ group stays intact on both sides. Count it as 1 unit, not as individual N and O atoms.</p>
-          <div class="warn-box"><p>⚠️ If a polyatomic ion is BROKEN UP in the reaction (like in combustion), you cannot treat it as a unit — you count individual atoms.</p></div>
-          <p style="margin-top:0.75rem;">Watch for brackets: <strong>Ca(OH)₂</strong> means there are 2 OH groups → 2 O atoms and 2 H atoms.</p>
+          <p style="margin-top:.75rem;">Example: <code class="eq-block">Pb(NO₃)₂ + 2KI → PbI₂ + 2KNO₃</code>NO₃ stays intact on both sides → count 2 NO₃ on left and 2 on right. ✓</p>
         </div>
       </div>
-
-    </div><!-- end learn-content -->
+    </div>
   </div>
-</div><!-- end learn section -->
+</div>
 
-<!-- GAMES SECTION -->
+<!-- ===== GAMES ===== -->
 <div id="games" class="section">
-  <div class="games-hero">
-    <h2>Pick a Game</h2>
-    <p>12 games, from easy to hard. Play each multiple times — the questions are randomized.</p>
+  <div class="games-header">
+    <h2>Choose a Game</h2>
+    <p>All questions are randomized from a bank of 100+. Play each game multiple times.</p>
   </div>
   <div class="games-grid">
-    <div class="game-card" onclick="openGame('g-balance')">
-      <div class="game-icon">⚖️</div>
-      <h3>Coefficient Fixer</h3>
-      <p>Type in the correct coefficients to balance the equation.</p>
-      <span class="game-tag tag-medium">Medium</span>
+    <div class="game-card" style="--card-accent:var(--mint)" onclick="launchGame('balance')">
+      <span class="gc-icon">⚖️</span>
+      <h3>Balance It</h3>
+      <p>Type the correct coefficients to fully balance the equation.</p>
+      <div class="gc-footer"><span class="gc-tag tag-med">Medium</span><span class="gc-best" id="best-balance">Best: —</span></div>
     </div>
-    <div class="game-card" onclick="openGame('g-identify')">
-      <div class="game-icon">🔬</div>
-      <h3>Reaction ID</h3>
-      <p>Look at the equation and identify which type of reaction it is.</p>
-      <span class="game-tag tag-easy">Easy</span>
+    <div class="game-card" style="--card-accent:var(--syn)" onclick="launchGame('identify')">
+      <span class="gc-icon">🔬</span>
+      <h3>Reaction Identifier</h3>
+      <p>Look at the equation and choose which of the 4 reaction types it is.</p>
+      <div class="gc-footer"><span class="gc-tag tag-easy">Easy</span><span class="gc-best" id="best-identify">Best: —</span></div>
     </div>
-    <div class="game-card" onclick="openGame('g-notation')">
-      <div class="game-icon">🏷️</div>
-      <h3>Notation Match</h3>
-      <p>Match the state symbols (aq), (s), (l), (g) to their correct meaning.</p>
-      <span class="game-tag tag-easy">Easy</span>
-    </div>
-    <div class="game-card" onclick="openGame('g-diatomic')">
-      <div class="game-icon">🧬</div>
-      <h3>Diatomic Quiz</h3>
-      <p>Is this element diatomic? Answer before the flashcard flips.</p>
-      <span class="game-tag tag-easy">Easy</span>
-    </div>
-    <div class="game-card" onclick="openGame('g-truefalsegame')">
-      <div class="game-icon">✅</div>
+    <div class="game-card" style="--card-accent:var(--dbl)" onclick="launchGame('trueFalse')">
+      <span class="gc-icon">✅</span>
       <h3>True or False</h3>
-      <p>Quick-fire chemistry facts — true or false?</p>
-      <span class="game-tag tag-easy">Easy</span>
+      <p>Quick-fire statements about reaction rules — true or false?</p>
+      <div class="gc-footer"><span class="gc-tag tag-easy">Easy</span><span class="gc-best" id="best-trueFalse">Best: —</span></div>
     </div>
-    <div class="game-card" onclick="openGame('g-atom-count')">
-      <div class="game-icon">🔢</div>
-      <h3>Atom Counter</h3>
-      <p>Count how many of each atom are on each side of the equation.</p>
-      <span class="game-tag tag-medium">Medium</span>
+    <div class="game-card" style="--card-accent:var(--sng)" onclick="launchGame('fillGap')">
+      <span class="gc-icon">✏️</span>
+      <h3>Fill the Gap</h3>
+      <p>One coefficient is missing from a balanced equation — find it.</p>
+      <div class="gc-footer"><span class="gc-tag tag-med">Medium</span><span class="gc-best" id="best-fillGap">Best: —</span></div>
     </div>
-    <div class="game-card" onclick="openGame('g-combustion')">
-      <div class="game-icon">🔥</div>
-      <h3>Combustion Challenge</h3>
-      <p>Balance hydrocarbon combustion equations step by step.</p>
-      <span class="game-tag tag-hard">Hard</span>
-    </div>
-    <div class="game-card" onclick="openGame('g-speed')">
-      <div class="game-icon">⚡</div>
-      <h3>Speed Round</h3>
-      <p>Balance as many equations as possible in 60 seconds!</p>
-      <span class="game-tag tag-timed">Timed</span>
-    </div>
-    <div class="game-card" onclick="openGame('g-mcq')">
-      <div class="game-icon">📋</div>
+    <div class="game-card" style="--card-accent:var(--orange)" onclick="launchGame('mcq')">
+      <span class="gc-icon">📋</span>
       <h3>Multiple Choice</h3>
-      <p>10-question quiz covering everything from notation to reaction types.</p>
-      <span class="game-tag tag-medium">Medium</span>
+      <p>10-question quiz covering all 4 reaction types and key rules.</p>
+      <div class="gc-footer"><span class="gc-tag tag-med">Medium</span><span class="gc-best" id="best-mcq">Best: —</span></div>
     </div>
-    <div class="game-card" onclick="openGame('g-product')">
-      <div class="game-icon">🧪</div>
+    <div class="game-card" style="--card-accent:var(--dec)" onclick="launchGame('predict')">
+      <span class="gc-icon">🧪</span>
       <h3>Predict the Product</h3>
-      <p>Given the reactants and type, choose the correct products.</p>
-      <span class="game-tag tag-hard">Hard</span>
+      <p>Given the reactants, choose the correct products.</p>
+      <div class="gc-footer"><span class="gc-tag tag-hard">Hard</span><span class="gc-best" id="best-predict">Best: —</span></div>
     </div>
-    <div class="game-card" onclick="openGame('g-fillblank')">
-      <div class="game-icon">✏️</div>
-      <h3>Fill the Blank</h3>
-      <p>A balanced equation with one coefficient hidden — find it.</p>
-      <span class="game-tag tag-medium">Medium</span>
+    <div class="game-card" style="--card-accent:var(--syn)" onclick="launchGame('speed')">
+      <span class="gc-icon">⚡</span>
+      <h3>Speed Drill</h3>
+      <p>Balance as many equations as possible in 60 seconds.</p>
+      <div class="gc-footer"><span class="gc-tag tag-time">Timed</span><span class="gc-best" id="best-speed">Best: —</span></div>
     </div>
-    <div class="game-card" onclick="openGame('g-flash')">
-      <div class="game-icon">🃏</div>
+    <div class="game-card" style="--card-accent:var(--mintd)" onclick="launchGame('flash')">
+      <span class="gc-icon">🃏</span>
       <h3>Flashcards</h3>
-      <p>Flip through key definitions and formulas. Perfect final revision.</p>
-      <span class="game-tag tag-easy">Easy</span>
+      <p>Flip through 20 key definitions, formulas, and rules.</p>
+      <div class="gc-footer"><span class="gc-tag tag-easy">Easy</span><span class="gc-best" id="best-flash">Best: —</span></div>
     </div>
   </div>
 </div>
 
-<!-- OVERLAY (shared modal container) -->
-<div class="overlay" id="overlay" onclick="handleOverlayClick(event)">
-  <div class="modal" id="modal-content">
-    <!-- dynamic content goes here -->
-  </div>
+<!-- ===== MODAL ===== -->
+<div class="overlay" id="overlay" onclick="overlayClick(event)">
+  <div class="modal" id="modal"></div>
 </div>
 
 <script>
-// ===================== NAVIGATION =====================
+// ============================================================
+// QUESTION BANKS
+// ============================================================
+const SYN='Synthesis', DEC='Decomposition', SNG='Single Displacement', DBL='Double Displacement';
+const TYPE_CLASS = { [SYN]:'tb-syn', [DEC]:'tb-dec', [SNG]:'tb-sng', [DBL]:'tb-dbl' };
+
+// BALANCE QUESTIONS — eq uses ? for each input in LTR order, answer is array of those values
+const BALANCE_Q = [
+  // SYNTHESIS (30)
+  { eq:'? Na + ? Cl₂ → ? NaCl', ans:[2,1,2], type:SYN, hint:'Na⁺ and Cl⁻ combine 1:1. Need 2 Na to match 1 Cl₂ (2 Cl).' },
+  { eq:'? K + ? Cl₂ → ? KCl', ans:[2,1,2], type:SYN, hint:'Same as Na + Cl₂. K⁺ and Cl⁻ in 1:1 ratio.' },
+  { eq:'? Mg + ? O₂ → ? MgO', ans:[2,1,2], type:SYN, hint:'1 O₂ gives 2 O atoms → 2 MgO → 2 Mg.' },
+  { eq:'? Al + ? O₂ → ? Al₂O₃', ans:[4,3,2], type:SYN, hint:'LCM of O: 2 and 3 = 6. Need 3 O₂ and 2 Al₂O₃ → 4 Al.' },
+  { eq:'? Fe + ? O₂ → ? Fe₂O₃', ans:[4,3,2], type:SYN, hint:'Same as Al₂O₃. LCM of 2 and 3 = 6.' },
+  { eq:'? Ca + ? Cl₂ → ? CaCl₂', ans:[1,1,1], type:SYN, hint:'Ca²⁺ and 2Cl⁻ → CaCl₂. Already 1:1:1.' },
+  { eq:'? Mg + ? S → ? MgS', ans:[1,1,1], type:SYN, hint:'1:1:1 — atoms already match.' },
+  { eq:'? Na + ? S → ? Na₂S', ans:[2,1,1], type:SYN, hint:'Na₂S needs 2 Na. 1 S atom on each side.' },
+  { eq:'? K + ? S → ? K₂S', ans:[2,1,1], type:SYN, hint:'K₂S needs 2 K. 1 S on each side.' },
+  { eq:'? N₂ + ? H₂ → ? NH₃', ans:[1,3,2], type:SYN, hint:'1 N₂ → 2 NH₃ (2N). 2 NH₃ = 6 H → need 3 H₂.' },
+  { eq:'? H₂ + ? Cl₂ → ? HCl', ans:[1,1,2], type:SYN, hint:'1 H₂ + 1 Cl₂ → 2 HCl.' },
+  { eq:'? H₂ + ? Br₂ → ? HBr', ans:[1,1,2], type:SYN, hint:'Same pattern as HCl.' },
+  { eq:'? Cu + ? O₂ → ? CuO', ans:[2,1,2], type:SYN, hint:'1 O₂ = 2 O atoms → 2 CuO → 2 Cu.' },
+  { eq:'? Fe + ? S → ? FeS', ans:[1,1,1], type:SYN, hint:'1:1:1 — simple.' },
+  { eq:'? Zn + ? S → ? ZnS', ans:[1,1,1], type:SYN, hint:'1:1:1 — simple.' },
+  { eq:'? Ca + ? O₂ → ? CaO', ans:[2,1,2], type:SYN, hint:'1 O₂ → 2 O atoms → 2 CaO → 2 Ca.' },
+  { eq:'? Al + ? Cl₂ → ? AlCl₃', ans:[2,3,2], type:SYN, hint:'AlCl₃ needs 3 Cl. LCM of 3 and 2 = 6 → 3 Cl₂, 2 AlCl₃, 2 Al.' },
+  { eq:'? SO₂ + ? O₂ → ? SO₃', ans:[2,1,2], type:SYN, hint:'2 SO₂ needs 1 extra O₂ (2 O) to make 2 SO₃.' },
+  { eq:'? NO + ? O₂ → ? NO₂', ans:[2,1,2], type:SYN, hint:'2 NO + 1 O₂ (2 O) → 2 NO₂.' },
+  { eq:'? P + ? O₂ → ? P₂O₅', ans:[4,5,2], type:SYN, hint:'P₂O₅ has 5 O. 5 O₂ = 10 O → 2 P₂O₅. 2 P₂O₅ = 4 P → 4 P.' },
+  { eq:'? CaO + ? H₂O → ? Ca(OH)₂', ans:[1,1,1], type:SYN, hint:'1:1:1 simple combination.' },
+  { eq:'? Na₂O + ? H₂O → ? NaOH', ans:[1,1,2], type:SYN, hint:'Na₂O has 2 Na → need 2 NaOH.' },
+  { eq:'? H₂ + ? I₂ → ? HI', ans:[1,1,2], type:SYN, hint:'1 H₂ + 1 I₂ → 2 HI.' },
+  { eq:'? Ba + ? Cl₂ → ? BaCl₂', ans:[1,1,1], type:SYN, hint:'1:1:1 — Ba²⁺ and 2Cl⁻.' },
+  { eq:'? Ca + ? S → ? CaS', ans:[1,1,1], type:SYN, hint:'1:1:1 simple.' },
+  { eq:'? Li + ? O₂ → ? Li₂O', ans:[4,1,2], type:SYN, hint:'Li₂O needs 2 Li. 1 O₂ = 2 O → 2 Li₂O → 4 Li.' },
+  { eq:'? Sn + ? Cl₂ → ? SnCl₂', ans:[1,1,1], type:SYN, hint:'SnCl₂: 1 Sn, 2 Cl = 1 Cl₂. Simple.' },
+  { eq:'? Fe + ? Cl₂ → ? FeCl₃', ans:[2,3,2], type:SYN, hint:'FeCl₃ needs 3 Cl. LCM(3,2)=6 → 3 Cl₂, 2 FeCl₃, 2 Fe.' },
+  { eq:'? Mg + ? N₂ → ? Mg₃N₂', ans:[3,1,1], type:SYN, hint:'Mg₃N₂: needs 3 Mg. 1 N₂ → 1 Mg₃N₂.' },
+  { eq:'? H₂ + ? N₂ → ? NH₃', ans:[3,1,2], type:SYN, hint:'2 NH₃ = 6H (3 H₂) and 2N (1 N₂).' },
+  // DECOMPOSITION (25)
+  { eq:'? H₂O → ? H₂ + ? O₂', ans:[2,2,1], type:DEC, hint:'2 H₂O → 2 H₂ + 1 O₂. Check: H=4, O=2 both sides.' },
+  { eq:'? HgO → ? Hg + ? O₂', ans:[2,2,1], type:DEC, hint:'2 HgO → 2 Hg + 1 O₂.' },
+  { eq:'? H₂O₂ → ? H₂O + ? O₂', ans:[2,2,1], type:DEC, hint:'2 H₂O₂ → 2 H₂O + O₂. Check O: 4=2+2 ✓ H: 4=4 ✓' },
+  { eq:'? KClO₃ → ? KCl + ? O₂', ans:[2,2,3], type:DEC, hint:'O: KClO₃ has 3O. LCM(3,2)=6 → 2KClO₃, 3O₂, 2KCl.' },
+  { eq:'? CaCO₃ → ? CaO + ? CO₂', ans:[1,1,1], type:DEC, hint:'1:1:1 simple. Ca=1, C=1, O=3 on each side.' },
+  { eq:'? MgCO₃ → ? MgO + ? CO₂', ans:[1,1,1], type:DEC, hint:'1:1:1 simple.' },
+  { eq:'? NH₄Cl → ? NH₃ + ? HCl', ans:[1,1,1], type:DEC, hint:'1:1:1. Check: N=1, H=4, Cl=1 each side.' },
+  { eq:'? Ag₂O → ? Ag + ? O₂', ans:[2,4,1], type:DEC, hint:'1 O₂ needs 2 Ag₂O (2O). 2 Ag₂O = 4 Ag.' },
+  { eq:'? AgCl → ? Ag + ? Cl₂', ans:[2,2,1], type:DEC, hint:'2 AgCl → 2 Ag + 1 Cl₂.' },
+  { eq:'? Al₂O₃ → ? Al + ? O₂', ans:[2,4,3], type:DEC, hint:'LCM(3,2)=6 → 2Al₂O₃ (6O), 3O₂. 2Al₂O₃ = 4Al.' },
+  { eq:'? Fe₂O₃ → ? Fe + ? O₂', ans:[2,4,3], type:DEC, hint:'Same as Al₂O₃ pattern.' },
+  { eq:'? H₂CO₃ → ? H₂O + ? CO₂', ans:[1,1,1], type:DEC, hint:'1:1:1. Carbonic acid decomposing.' },
+  { eq:'? HBr → ? H₂ + ? Br₂', ans:[2,1,1], type:DEC, hint:'2 HBr → 1 H₂ + 1 Br₂.' },
+  { eq:'? HI → ? H₂ + ? I₂', ans:[2,1,1], type:DEC, hint:'2 HI → 1 H₂ + 1 I₂.' },
+  { eq:'? NH₃ → ? N₂ + ? H₂', ans:[2,1,3], type:DEC, hint:'2 NH₃ → 1 N₂ + 3 H₂. Check: N=2, H=6.' },
+  { eq:'? PCl₅ → ? PCl₃ + ? Cl₂', ans:[1,1,1], type:DEC, hint:'P=1, Cl=5 left; Cl=3+2=5 right. ✓' },
+  { eq:'? ZnCO₃ → ? ZnO + ? CO₂', ans:[1,1,1], type:DEC, hint:'1:1:1 simple carbonate decomposition.' },
+  { eq:'? FeCO₃ → ? FeO + ? CO₂', ans:[1,1,1], type:DEC, hint:'1:1:1 simple.' },
+  { eq:'? BaCO₃ → ? BaO + ? CO₂', ans:[1,1,1], type:DEC, hint:'1:1:1 simple.' },
+  { eq:'? NiCO₃ → ? NiO + ? CO₂', ans:[1,1,1], type:DEC, hint:'1:1:1 simple.' },
+  { eq:'? Ag₂CO₃ → ? Ag₂O + ? CO₂', ans:[1,1,1], type:DEC, hint:'1:1:1. Ag₂ stays together on both sides.' },
+  { eq:'? SrCO₃ → ? SrO + ? CO₂', ans:[1,1,1], type:DEC, hint:'1:1:1 simple.' },
+  { eq:'? Cu₂O → ? Cu + ? O₂', ans:[2,4,1], type:DEC, hint:'2 Cu₂O → 4 Cu + 1 O₂.' },
+  { eq:'? PbO → ? Pb + ? O₂', ans:[2,2,1], type:DEC, hint:'2 PbO → 2 Pb + 1 O₂.' },
+  { eq:'? HCl → ? H₂ + ? Cl₂', ans:[2,1,1], type:DEC, hint:'2 HCl → 1 H₂ + 1 Cl₂.' },
+  // SINGLE DISPLACEMENT (25)
+  { eq:'? Zn + ? HCl → ? ZnCl₂ + ? H₂', ans:[1,2,1,1], type:SNG, hint:'ZnCl₂ needs 2 Cl → 2 HCl. 2 H → 1 H₂.' },
+  { eq:'? Mg + ? HCl → ? MgCl₂ + ? H₂', ans:[1,2,1,1], type:SNG, hint:'MgCl₂ needs 2 Cl → 2 HCl → 1 H₂.' },
+  { eq:'? Fe + ? HCl → ? FeCl₂ + ? H₂', ans:[1,2,1,1], type:SNG, hint:'FeCl₂ needs 2 Cl → 2 HCl → 1 H₂.' },
+  { eq:'? Ca + ? HCl → ? CaCl₂ + ? H₂', ans:[1,2,1,1], type:SNG, hint:'CaCl₂ needs 2 Cl → 2 HCl → 1 H₂.' },
+  { eq:'? Al + ? HCl → ? AlCl₃ + ? H₂', ans:[2,6,2,3], type:SNG, hint:'AlCl₃ needs 3 Cl. LCM(3,2)=6 → 2Al+6HCl→2AlCl₃+3H₂.' },
+  { eq:'? Zn + ? H₂SO₄ → ? ZnSO₄ + ? H₂', ans:[1,1,1,1], type:SNG, hint:'1:1:1:1. SO₄ stays intact as one unit.' },
+  { eq:'? Fe + ? H₂SO₄ → ? FeSO₄ + ? H₂', ans:[1,1,1,1], type:SNG, hint:'1:1:1:1 simple.' },
+  { eq:'? Mg + ? H₂SO₄ → ? MgSO₄ + ? H₂', ans:[1,1,1,1], type:SNG, hint:'1:1:1:1 simple.' },
+  { eq:'? Zn + ? CuSO₄ → ? ZnSO₄ + ? Cu', ans:[1,1,1,1], type:SNG, hint:'Zn displaces Cu. SO₄ stays as a unit. 1:1:1:1.' },
+  { eq:'? Fe + ? CuSO₄ → ? FeSO₄ + ? Cu', ans:[1,1,1,1], type:SNG, hint:'Fe displaces Cu. 1:1:1:1.' },
+  { eq:'? Mg + ? CuSO₄ → ? MgSO₄ + ? Cu', ans:[1,1,1,1], type:SNG, hint:'Mg displaces Cu. 1:1:1:1.' },
+  { eq:'? Zn + ? AgNO₃ → ? Zn(NO₃)₂ + ? Ag', ans:[1,2,1,2], type:SNG, hint:'Zn(NO₃)₂ needs 2 NO₃ → 2 AgNO₃ → releases 2 Ag.' },
+  { eq:'? Cu + ? AgNO₃ → ? Cu(NO₃)₂ + ? Ag', ans:[1,2,1,2], type:SNG, hint:'Same as Zn+AgNO₃ pattern.' },
+  { eq:'? Fe + ? AgNO₃ → ? Fe(NO₃)₂ + ? Ag', ans:[1,2,1,2], type:SNG, hint:'Fe(NO₃)₂ needs 2 NO₃ → 2 AgNO₃ → 2 Ag.' },
+  { eq:'? Cl₂ + ? KI → ? I₂ + ? KCl', ans:[1,2,1,2], type:SNG, hint:'1 Cl₂ displaces 2 I⁻ → I₂. Need 2 KI → 2 KCl.' },
+  { eq:'? Cl₂ + ? NaI → ? I₂ + ? NaCl', ans:[1,2,1,2], type:SNG, hint:'Same as Cl₂+KI pattern.' },
+  { eq:'? Br₂ + ? KI → ? I₂ + ? KBr', ans:[1,2,1,2], type:SNG, hint:'Br₂ displaces I. 1:2:1:2 pattern.' },
+  { eq:'? Cl₂ + ? KBr → ? Br₂ + ? KCl', ans:[1,2,1,2], type:SNG, hint:'1:2:1:2 halogen displacement pattern.' },
+  { eq:'? F₂ + ? KCl → ? Cl₂ + ? KF', ans:[1,2,1,2], type:SNG, hint:'F₂ displaces Cl. 1:2:1:2 pattern.' },
+  { eq:'? Li + ? NaCl → ? LiCl + ? Na', ans:[1,1,1,1], type:SNG, hint:'Li is more reactive — displaces Na. 1:1:1:1.' },
+  { eq:'? Mg + ? ZnSO₄ → ? MgSO₄ + ? Zn', ans:[1,1,1,1], type:SNG, hint:'Mg more reactive than Zn. 1:1:1:1, SO₄ as unit.' },
+  { eq:'? Zn + ? Pb(NO₃)₂ → ? Zn(NO₃)₂ + ? Pb', ans:[1,1,1,1], type:SNG, hint:'NO₃ as unit. 1:1:1:1.' },
+  { eq:'? Ca + ? MgCl₂ → ? CaCl₂ + ? Mg', ans:[1,1,1,1], type:SNG, hint:'Ca more reactive than Mg. 1:1:1:1.' },
+  { eq:'? Na + ? H₂O → ? NaOH + ? H₂', ans:[2,2,2,1], type:SNG, hint:'2 Na + 2 H₂O → 2 NaOH + H₂. Check: Na=2, O=2, H=4.' },
+  { eq:'? Al + ? FeSO₄ → ? Al₂(SO₄)₃ + ? Fe', ans:[2,3,1,3], type:SNG, hint:'Al₂(SO₄)₃ needs 3 SO₄ → 3 FeSO₄ → 3 Fe. 2 Al on left.' },
+  // DOUBLE DISPLACEMENT (25)
+  { eq:'? AgNO₃ + ? NaCl → ? AgCl + ? NaNO₃', ans:[1,1,1,1], type:DBL, hint:'1:1:1:1. Ag⁺ swaps with Na⁺.' },
+  { eq:'? Pb(NO₃)₂ + ? KI → ? PbI₂ + ? KNO₃', ans:[1,2,1,2], type:DBL, hint:'Pb(NO₃)₂ has 2 NO₃ → need 2 KNO₃ and 2 KI.' },
+  { eq:'? BaCl₂ + ? Na₂SO₄ → ? BaSO₄ + ? NaCl', ans:[1,1,1,2], type:DBL, hint:'Na₂SO₄ gives 2 Na → 2 NaCl. Ba and SO₄ are 1:1.' },
+  { eq:'? CaCl₂ + ? Na₂CO₃ → ? CaCO₃ + ? NaCl', ans:[1,1,1,2], type:DBL, hint:'Na₂CO₃ gives 2 Na → 2 NaCl. Ca and CO₃ are 1:1.' },
+  { eq:'? AgNO₃ + ? KBr → ? AgBr + ? KNO₃', ans:[1,1,1,1], type:DBL, hint:'1:1:1:1 simple ion swap.' },
+  { eq:'? Pb(NO₃)₂ + ? NaCl → ? PbCl₂ + ? NaNO₃', ans:[1,2,1,2], type:DBL, hint:'PbCl₂ needs 2 Cl → 2 NaCl. 2 NO₃ → 2 NaNO₃.' },
+  { eq:'? CuSO₄ + ? NaOH → ? Cu(OH)₂ + ? Na₂SO₄', ans:[1,2,1,1], type:DBL, hint:'Cu(OH)₂ needs 2 OH → 2 NaOH. 2 Na → 1 Na₂SO₄.' },
+  { eq:'? FeCl₃ + ? NaOH → ? Fe(OH)₃ + ? NaCl', ans:[1,3,1,3], type:DBL, hint:'Fe(OH)₃ needs 3 OH → 3 NaOH → 3 NaCl.' },
+  { eq:'? AlCl₃ + ? NaOH → ? Al(OH)₃ + ? NaCl', ans:[1,3,1,3], type:DBL, hint:'Al(OH)₃ needs 3 OH → 3 NaOH → 3 NaCl.' },
+  { eq:'? MgCl₂ + ? NaOH → ? Mg(OH)₂ + ? NaCl', ans:[1,2,1,2], type:DBL, hint:'Mg(OH)₂ needs 2 OH → 2 NaOH → 2 NaCl.' },
+  { eq:'? ZnCl₂ + ? NaOH → ? Zn(OH)₂ + ? NaCl', ans:[1,2,1,2], type:DBL, hint:'Zn(OH)₂ needs 2 OH → 2 NaOH → 2 NaCl.' },
+  { eq:'? HCl + ? NaOH → ? NaCl + ? H₂O', ans:[1,1,1,1], type:DBL, hint:'Acid-base neutralization. 1:1:1:1.' },
+  { eq:'? H₂SO₄ + ? NaOH → ? Na₂SO₄ + ? H₂O', ans:[1,2,1,2], type:DBL, hint:'H₂SO₄ has 2 H → 2 NaOH. Na₂SO₄ needs 2 Na ✓. 2 OH → 2 H₂O.' },
+  { eq:'? H₂SO₄ + ? KOH → ? K₂SO₄ + ? H₂O', ans:[1,2,1,2], type:DBL, hint:'Same as H₂SO₄+NaOH pattern.' },
+  { eq:'? HNO₃ + ? KOH → ? KNO₃ + ? H₂O', ans:[1,1,1,1], type:DBL, hint:'1:1:1:1 acid-base.' },
+  { eq:'? CaCl₂ + ? AgNO₃ → ? AgCl + ? Ca(NO₃)₂', ans:[1,2,2,1], type:DBL, hint:'Ca²⁺ → Ca(NO₃)₂ needs 2 NO₃ → 2 AgNO₃ → 2 AgCl.' },
+  { eq:'? K₂CO₃ + ? CaCl₂ → ? CaCO₃ + ? KCl', ans:[1,1,1,2], type:DBL, hint:'K₂CO₃ has 2 K → 2 KCl. Ca and CO₃ 1:1.' },
+  { eq:'? Na₂CO₃ + ? CaCl₂ → ? CaCO₃ + ? NaCl', ans:[1,1,1,2], type:DBL, hint:'Same as K₂CO₃+CaCl₂ pattern.' },
+  { eq:'? Na₂SO₄ + ? BaCl₂ → ? BaSO₄ + ? NaCl', ans:[1,1,1,2], type:DBL, hint:'Na₂SO₄ gives 2 Na → 2 NaCl.' },
+  { eq:'? K₂SO₄ + ? BaCl₂ → ? BaSO₄ + ? KCl', ans:[1,1,1,2], type:DBL, hint:'K₂SO₄ gives 2 K → 2 KCl.' },
+  { eq:'? FeCl₂ + ? NaOH → ? Fe(OH)₂ + ? NaCl', ans:[1,2,1,2], type:DBL, hint:'Fe(OH)₂ needs 2 OH → 2 NaOH → 2 NaCl.' },
+  { eq:'? CuCl₂ + ? NaOH → ? Cu(OH)₂ + ? NaCl', ans:[1,2,1,2], type:DBL, hint:'Cu(OH)₂ needs 2 OH → 2 NaOH → 2 NaCl.' },
+  { eq:'? BaCl₂ + ? K₂CO₃ → ? BaCO₃ + ? KCl', ans:[1,1,1,2], type:DBL, hint:'K₂CO₃ gives 2 K → 2 KCl.' },
+  { eq:'? Pb(NO₃)₂ + ? Na₂SO₄ → ? PbSO₄ + ? NaNO₃', ans:[1,1,1,2], type:DBL, hint:'Pb(NO₃)₂ has 2 NO₃ → 2 NaNO₃. Na₂SO₄ has 2 Na ✓.' },
+  { eq:'? AgNO₃ + ? K₂SO₄ → ? Ag₂SO₄ + ? KNO₃', ans:[2,1,1,2], type:DBL, hint:'Ag₂SO₄ needs 2 Ag → 2 AgNO₃. K₂SO₄ has 2 K → 2 KNO₃.' },
+];
+
+// IDENTIFY QUESTIONS
+const IDENTIFY_Q = [
+  { eq:'2Na + Cl₂ → 2NaCl', ans:SYN, hint:'Two reactants form one product.' },
+  { eq:'2H₂O → 2H₂ + O₂', ans:DEC, hint:'One reactant breaks into multiple products.' },
+  { eq:'Zn + CuSO₄ → ZnSO₄ + Cu', ans:SNG, hint:'Zn element replaces Cu in a compound.' },
+  { eq:'AgNO₃ + NaCl → AgCl + NaNO₃', ans:DBL, hint:'Two ionic compounds swap their ions.' },
+  { eq:'4Al + 3O₂ → 2Al₂O₃', ans:SYN, hint:'Elements combining into one compound.' },
+  { eq:'CaCO₃ → CaO + CO₂', ans:DEC, hint:'One compound splitting into two simpler ones.' },
+  { eq:'Mg + 2HCl → MgCl₂ + H₂', ans:SNG, hint:'Mg replaces H in the acid.' },
+  { eq:'BaCl₂ + Na₂SO₄ → BaSO₄ + 2NaCl', ans:DBL, hint:'Ba²⁺ and Na⁺ swap partners.' },
+  { eq:'N₂ + 3H₂ → 2NH₃', ans:SYN, hint:'Two elements combine into one compound.' },
+  { eq:'2KClO₃ → 2KCl + 3O₂', ans:DEC, hint:'One compound breaks down.' },
+  { eq:'Cl₂ + 2KI → I₂ + 2KCl', ans:SNG, hint:'Cl₂ (non-metal) displaces I⁻ (non-metal).' },
+  { eq:'CuSO₄ + 2NaOH → Cu(OH)₂ + Na₂SO₄', ans:DBL, hint:'Cu²⁺ and Na⁺ swap partners.' },
+  { eq:'2Mg + O₂ → 2MgO', ans:SYN, hint:'Two reactants → one product.' },
+  { eq:'2HgO → 2Hg + O₂', ans:DEC, hint:'One reactant → two products.' },
+  { eq:'Fe + CuSO₄ → FeSO₄ + Cu', ans:SNG, hint:'Fe displaces Cu from compound.' },
+  { eq:'Pb(NO₃)₂ + 2KI → PbI₂ + 2KNO₃', ans:DBL, hint:'Pb²⁺ and K⁺ swap partners.' },
+  { eq:'H₂ + Cl₂ → 2HCl', ans:SYN, hint:'Two elements form one compound.' },
+  { eq:'2H₂O₂ → 2H₂O + O₂', ans:DEC, hint:'Hydrogen peroxide decomposing.' },
+  { eq:'Cu + 2AgNO₃ → Cu(NO₃)₂ + 2Ag', ans:SNG, hint:'Cu displaces Ag from silver nitrate.' },
+  { eq:'FeCl₃ + 3NaOH → Fe(OH)₃ + 3NaCl', ans:DBL, hint:'Fe³⁺ and Na⁺ swap — classic double displacement.' },
+  { eq:'2Na + S → Na₂S', ans:SYN, hint:'Two elements → one product.' },
+  { eq:'2NH₃ → N₂ + 3H₂', ans:DEC, hint:'Ammonia decomposing into its elements.' },
+  { eq:'Br₂ + 2NaI → I₂ + 2NaBr', ans:SNG, hint:'Br₂ displaces I⁻.' },
+  { eq:'H₂SO₄ + 2NaOH → Na₂SO₄ + 2H₂O', ans:DBL, hint:'Acid-base neutralization — classic double displacement.' },
+  { eq:'Ca + Cl₂ → CaCl₂', ans:SYN, hint:'Two reactants → one product.' },
+  { eq:'PCl₅ → PCl₃ + Cl₂', ans:DEC, hint:'One compound splits into two.' },
+  { eq:'Na + H₂O → NaOH + ½H₂', ans:SNG, hint:'Na displaces H from water.' },
+  { eq:'K₂CO₃ + CaCl₂ → CaCO₃ + 2KCl', ans:DBL, hint:'K⁺ and Ca²⁺ swap partners.' },
+  { eq:'4Fe + 3O₂ → 2Fe₂O₃', ans:SYN, hint:'Elements combining into one compound.' },
+  { eq:'2AgCl → 2Ag + Cl₂', ans:DEC, hint:'Silver chloride decomposing (light reaction).' },
+];
+
+// TRUE/FALSE QUESTIONS
+const TF_Q = [
+  { q:'In a synthesis reaction, there is exactly one product.', a:true, exp:'Correct. A + B → AB. One product defines synthesis.' },
+  { q:'Subscripts can be changed to help balance an equation.', a:false, exp:'Never. Only coefficients can be changed. Changing subscripts changes the substance.' },
+  { q:'In decomposition, there is exactly one reactant.', a:true, exp:'Correct. AB → A + B. One reactant defines decomposition.' },
+  { q:'Double displacement involves one element replacing another in a compound.', a:false, exp:'That is single displacement. Double displacement is when two ionic compounds swap their ions.' },
+  { q:'A coefficient of 1 must be written in the final balanced equation.', a:false, exp:'A coefficient of 1 is implied and is not written.' },
+  { q:'In single displacement, a metal can replace hydrogen from an acid.', a:true, exp:'Correct. H⁺ in acids behaves like a metal cation, so reactive metals can displace it.' },
+  { q:'The Law of Conservation of Mass says matter is destroyed in reactions.', a:false, exp:'It says the opposite: matter cannot be created or destroyed. Atom counts must match on both sides.' },
+  { q:'(aq) means the substance is in a gaseous state.', a:false, exp:'(aq) means aqueous — dissolved in water. Gas is (g).' },
+  { q:'In double displacement, two compounds swap their positive ions.', a:true, exp:'Correct. AB + CD → AD + CB. Cations (positive ions) swap partners.' },
+  { q:'If a polyatomic ion is unchanged on both sides, treat it as one unit.', a:true, exp:'Correct. This simplifies counting when balancing.' },
+  { q:'Synthesis reactions always have exactly two reactants.', a:false, exp:'Synthesis just requires ONE product. There can be two or more reactants, but it could also be A + B + C → ABC.' },
+  { q:'Decomposition reactions often require energy input such as heat or electricity.', a:true, exp:'Correct. The input of energy (heat, light, electricity) is usually needed to break bonds apart.' },
+  { q:'In the reaction Zn + CuSO₄ → ZnSO₄ + Cu, this is double displacement.', a:false, exp:'This is single displacement. Zn (one element) replaces Cu in the compound.' },
+  { q:'A precipitate (s) forming is a common sign of a double displacement reaction.', a:true, exp:'Correct. When ions swap and one combination is insoluble, it forms a solid precipitate.' },
+  { q:'In single displacement: A + BC → AC + B, the "A" must always be a metal.', a:false, exp:'A can also be a non-metal. For example, Cl₂ + 2KI → I₂ + 2KCl is single displacement with non-metals.' },
+  { q:'2Fe₂O₃ means there are 2 iron atoms in total.', a:false, exp:'2 × Fe₂O₃ = 2×2 = 4 Fe atoms and 2×3 = 6 O atoms.' },
+  { q:'The general formula for double displacement is AB + CD → AD + CB.', a:true, exp:'Correct. The positive ion of one compound pairs with the negative ion of the other.' },
+  { q:'You can only change the coefficient of the first substance in an equation.', a:false, exp:'You can change the coefficient of any substance. They all need to balance both sides.' },
+  { q:'BaCl₂ + Na₂SO₄ → BaSO₄ + 2NaCl is a double displacement reaction.', a:true, exp:'Correct. Ba²⁺ swaps with Na⁺. Two ionic compounds → two new ionic compounds.' },
+  { q:'In N₂ + 3H₂ → 2NH₃, this is a synthesis reaction.', a:true, exp:'Correct. Two reactants form one product (NH₃).' },
+  { q:'AlCl₃ + 3NaOH → Al(OH)₃ + 3NaCl uses the coefficient 3 for NaOH because Al(OH)₃ needs 3 OH groups.', a:true, exp:'Correct. The product formula dictates the coefficient.' },
+  { q:'2HCl → H₂ + Cl₂ is a single displacement reaction.', a:false, exp:'This is decomposition — one reactant (HCl) breaks into two products.' },
+  { q:'Synthesis is the opposite of decomposition.', a:true, exp:'Correct. Synthesis builds up (A+B→AB), decomposition breaks down (AB→A+B).' },
+];
+
+// FILL-GAP QUESTIONS
+const FILL_Q = [
+  { eq:'__ Na + 1 Cl₂ → 2 NaCl', blank:0, ans:2, full:'2 Na + 1 Cl₂ → 2 NaCl', type:SYN },
+  { eq:'2 H₂O → __ H₂ + 1 O₂', blank:2, ans:2, full:'2 H₂O → 2 H₂ + 1 O₂', type:DEC },
+  { eq:'1 Zn + __ HCl → 1 ZnCl₂ + 1 H₂', blank:1, ans:2, full:'1 Zn + 2 HCl → 1 ZnCl₂ + 1 H₂', type:SNG },
+  { eq:'1 Pb(NO₃)₂ + 2 KI → 1 PbI₂ + __ KNO₃', blank:3, ans:2, full:'1 Pb(NO₃)₂ + 2 KI → 1 PbI₂ + 2 KNO₃', type:DBL },
+  { eq:'4 Al + __ O₂ → 2 Al₂O₃', blank:1, ans:3, full:'4 Al + 3 O₂ → 2 Al₂O₃', type:SYN },
+  { eq:'2 KClO₃ → 2 KCl + __ O₂', blank:2, ans:3, full:'2 KClO₃ → 2 KCl + 3 O₂', type:DEC },
+  { eq:'1 Cl₂ + 2 KI → 1 I₂ + __ KCl', blank:3, ans:2, full:'1 Cl₂ + 2 KI → 1 I₂ + 2 KCl', type:SNG },
+  { eq:'1 BaCl₂ + 1 Na₂SO₄ → 1 BaSO₄ + __ NaCl', blank:3, ans:2, full:'1 BaCl₂ + 1 Na₂SO₄ → 1 BaSO₄ + 2 NaCl', type:DBL },
+  { eq:'__ Fe + 3 O₂ → 2 Fe₂O₃', blank:0, ans:4, full:'4 Fe + 3 O₂ → 2 Fe₂O₃', type:SYN },
+  { eq:'2 Ag₂O → __ Ag + 1 O₂', blank:1, ans:4, full:'2 Ag₂O → 4 Ag + 1 O₂', type:DEC },
+  { eq:'1 Cu + __ AgNO₃ → 1 Cu(NO₃)₂ + 2 Ag', blank:1, ans:2, full:'1 Cu + 2 AgNO₃ → 1 Cu(NO₃)₂ + 2 Ag', type:SNG },
+  { eq:'1 CuSO₄ + __ NaOH → 1 Cu(OH)₂ + 1 Na₂SO₄', blank:1, ans:2, full:'1 CuSO₄ + 2 NaOH → 1 Cu(OH)₂ + 1 Na₂SO₄', type:DBL },
+  { eq:'1 N₂ + 3 H₂ → __ NH₃', blank:2, ans:2, full:'1 N₂ + 3 H₂ → 2 NH₃', type:SYN },
+  { eq:'2 Al₂O₃ → __ Al + 3 O₂', blank:1, ans:4, full:'2 Al₂O₃ → 4 Al + 3 O₂', type:DEC },
+  { eq:'2 Al + __ HCl → 2 AlCl₃ + 3 H₂', blank:1, ans:6, full:'2 Al + 6 HCl → 2 AlCl₃ + 3 H₂', type:SNG },
+  { eq:'1 FeCl₃ + 3 NaOH → 1 Fe(OH)₃ + __ NaCl', blank:3, ans:3, full:'1 FeCl₃ + 3 NaOH → 1 Fe(OH)₃ + 3 NaCl', type:DBL },
+  { eq:'2 Na + __ S → 1 Na₂S', blank:1, ans:1, full:'2 Na + 1 S → 1 Na₂S', type:SYN },
+  { eq:'__ H₂O₂ → 2 H₂O + 1 O₂', blank:0, ans:2, full:'2 H₂O₂ → 2 H₂O + 1 O₂', type:DEC },
+  { eq:'1 Mg + 1 H₂SO₄ → 1 MgSO₄ + __ H₂', blank:3, ans:1, full:'1 Mg + 1 H₂SO₄ → 1 MgSO₄ + 1 H₂', type:SNG },
+  { eq:'1 H₂SO₄ + 2 NaOH → 1 Na₂SO₄ + __ H₂O', blank:3, ans:2, full:'1 H₂SO₄ + 2 NaOH → 1 Na₂SO₄ + 2 H₂O', type:DBL },
+];
+
+// MCQ QUESTIONS
+const MCQ_Q = [
+  { q:'What type of reaction is: 2H₂ + O₂ → 2H₂O?', opts:['Decomposition','Single Displacement','Double Displacement','Synthesis'], ans:3 },
+  { q:'What type of reaction has ONE reactant and multiple products?', opts:['Synthesis','Decomposition','Single Displacement','Double Displacement'], ans:1 },
+  { q:'In A + BC → AC + B, what type of reaction is this?', opts:['Synthesis','Decomposition','Single Displacement','Double Displacement'], ans:2 },
+  { q:'Which change is ILLEGAL when balancing equations?', opts:['Changing a coefficient from 1 to 2','Adding a coefficient in front','Changing a subscript from 2 to 3','Removing a coefficient of 1'], ans:2 },
+  { q:'What does the Law of Conservation of Mass state?', opts:['Energy is always released in reactions','Matter cannot be created or destroyed','Products always weigh less than reactants','Reactions need a catalyst'], ans:1 },
+  { q:'What is the correct balance for: Al + Cl₂ → AlCl₃?', opts:['1 + 1 → 1','2 + 3 → 2','2 + 1 → 2','1 + 3 → 2'], ans:1 },
+  { q:'In double displacement, what is swapped between the two compounds?', opts:['Electrons','Cations (positive ions)','Subscripts','Neutrons'], ans:1 },
+  { q:'Which of the following is a DECOMPOSITION reaction?', opts:['2Na + Cl₂ → 2NaCl','2KClO₃ → 2KCl + 3O₂','Fe + CuSO₄ → FeSO₄ + Cu','HCl + NaOH → NaCl + H₂O'], ans:1 },
+  { q:'What does (aq) mean in a chemical equation?', opts:['Solid state','Gaseous state','Dissolved in water','Liquid state'], ans:2 },
+  { q:'Which is a SINGLE DISPLACEMENT reaction?', opts:['CaCO₃ → CaO + CO₂','Cl₂ + 2KI → I₂ + 2KCl','HCl + NaOH → NaCl + H₂O','2Al + 3O₂ → 2Al₂O₃'], ans:1 },
+  { q:'What coefficient balances oxygen in: 4Fe + ? O₂ → 2Fe₂O₃?', opts:['2','4','3','1'], ans:2 },
+  { eq:'Pb(NO₃)₂ + 2KI → PbI₂ + ?KNO₃', q:'What coefficient goes in front of KNO₃?', opts:['1','2','3','4'], ans:1 },
+  { q:'A precipitate forming is a sign of which reaction type?', opts:['Synthesis','Decomposition','Single Displacement','Double Displacement'], ans:3 },
+  { q:'How many H atoms are in 2Ca(OH)₂?', opts:['2','4','6','8'], ans:1 },
+  { q:'Which reaction type is described as: "the opposite of synthesis"?', opts:['Combustion','Single Displacement','Decomposition','Double Displacement'], ans:2 },
+  { q:'What is the correct balance for: Na + H₂O → NaOH + H₂?', opts:['1+1→1+1','2+2→2+1','1+2→1+2','2+1→2+1'], ans:1 },
+  { q:'In Fe + CuSO₄ → FeSO₄ + Cu, which type is this?', opts:['Synthesis','Decomposition','Single Displacement','Double Displacement'], ans:2 },
+  { q:'How many O atoms are in 3NO₃⁻ polyatomic ions?', opts:['3','6','9','12'], ans:2 },
+  { q:'What do coefficients represent in a chemical equation?', opts:['The charge of each ion','The type of bond','The number of each molecule/formula unit','The temperature needed'], ans:2 },
+  { q:'Which is a SYNTHESIS reaction?', opts:['2H₂O → 2H₂ + O₂','CaCO₃ → CaO + CO₂','N₂ + 3H₂ → 2NH₃','Fe + 2HCl → FeCl₂ + H₂'], ans:2 },
+];
+
+// PREDICT PRODUCT QUESTIONS
+const PREDICT_Q = [
+  { rxn:'Na + Cl₂ →', type:SYN, hint:'Na forms Na⁺, Cl forms Cl⁻, combine 1:1', opts:['NaCl','NaCl₂','Na₂Cl','Na₂Cl₃'], ans:0 },
+  { rxn:'2H₂O →', type:DEC, hint:'Water decomposes into hydrogen gas and oxygen gas', opts:['H + O₂','H₂ + O₂','H₂O₂ + H','H₂ + 2O'], ans:1 },
+  { rxn:'Zn + CuSO₄ →', type:SNG, hint:'Zn displaces Cu. SO₄ stays as a unit.', opts:['ZnCu + SO₄','ZnSO₄ + Cu','ZnCuSO₄','CuZn + SO₄'], ans:1 },
+  { rxn:'AgNO₃ + NaCl →', type:DBL, hint:'Ag⁺ pairs with Cl⁻, Na⁺ pairs with NO₃⁻', opts:['AgNa + NO₃Cl','AgCl + NaNO₃','AgNO₃Cl + Na','NaAg + ClNO₃'], ans:1 },
+  { rxn:'Ca + O₂ →', type:SYN, hint:'Ca²⁺ and O²⁻ combine in 2:1 charge ratio → CaO', opts:['Ca₂O','CaO','CaO₂','Ca₂O₃'], ans:1 },
+  { rxn:'CaCO₃ →', type:DEC, hint:'Calcium carbonate → calcium oxide + carbon dioxide', opts:['Ca + CO₃','CaO + CO₂','Ca₂O + CO₃','CaC + O₃'], ans:1 },
+  { rxn:'Mg + 2HCl →', type:SNG, hint:'Mg displaces H from HCl to form MgCl₂ and hydrogen gas', opts:['MgHCl + H','MgCl + HCl','MgCl₂ + H₂','MgH + Cl₂'], ans:2 },
+  { rxn:'BaCl₂ + Na₂SO₄ →', type:DBL, hint:'Ba²⁺ swaps with Na⁺. BaSO₄ is insoluble (precipitate)', opts:['BaSO₄ + 2NaCl','BaNa + ClSO₄','Ba₂SO₄ + NaCl₂','BaSO₄ + NaCl'], ans:0 },
+  { rxn:'2KClO₃ →', type:DEC, hint:'Potassium chlorate decomposes to potassium chloride + oxygen', opts:['K + ClO₃','K₂ClO₃ + O','2KCl + 3O₂','2KO + Cl₂O'], ans:2 },
+  { rxn:'Cl₂ + 2KI →', type:SNG, hint:'Cl is more reactive than I. Cl displaces I⁻ from KI.', opts:['KCl₂ + I','I₂ + 2KCl','KI₂ + Cl','2KCl₂ + I'], ans:1 },
+  { rxn:'CuSO₄ + 2NaOH →', type:DBL, hint:'Cu²⁺ pairs with OH⁻. Na⁺ pairs with SO₄²⁻.', opts:['CuNa + SO₄OH','Cu(OH)₂ + Na₂SO₄','CuOH + NaSO₄','Cu₂(OH)₄ + Na₂SO₄'], ans:1 },
+  { rxn:'2NH₃ →', type:DEC, hint:'Ammonia decomposes into its elements: nitrogen and hydrogen gas', opts:['N + 3H','N₂ + 3H₂','2NH + H','N₂H₂ + H₂'], ans:1 },
+  { rxn:'Cu + 2AgNO₃ →', type:SNG, hint:'Cu displaces Ag. Cu²⁺ pairs with 2 NO₃⁻.', opts:['CuNO₃ + 2Ag','CuAg + NO₃','Cu(NO₃)₂ + 2Ag','Cu₂NO₃ + Ag₂'], ans:2 },
+  { rxn:'FeCl₃ + 3NaOH →', type:DBL, hint:'Fe³⁺ takes 3 OH⁻. Na⁺ takes 3 Cl⁻.', opts:['Fe(OH)₃ + 3NaCl','FeOH + NaCl₃','Fe₃OH + 3NaCl','FeNaCl + 3OH'], ans:0 },
+  { rxn:'4Al + 3O₂ →', type:SYN, hint:'Al³⁺ and O²⁻ combine in 2:3 ratio → Al₂O₃', opts:['4AlO','Al₄O₃','2Al₂O₃','AlO₂'], ans:2 },
+];
+
+// FLASHCARDS
+const FLASH_Q = [
+  { f:'Law of Conservation of Mass', b:'Matter cannot be created or destroyed in a chemical reaction. Atoms on both sides must be equal.' },
+  { f:'Synthesis Reaction', b:'A + B → AB\nTwo or more reactants combine into ONE product.' },
+  { f:'Decomposition Reaction', b:'AB → A + B\nONE reactant breaks into two or more products.' },
+  { f:'Single Displacement', b:'A + BC → AC + B\nOne element replaces a similar element in a compound.' },
+  { f:'Double Displacement', b:'AB + CD → AD + CB\nTwo ionic compounds exchange their cations (positive ions).' },
+  { f:'Key Rule: Coefficients vs Subscripts', b:'ONLY change coefficients (big numbers in front).\nNEVER change subscripts (small numbers after element).\nChanging subscripts changes the substance itself.' },
+  { f:'Balancing Order', b:'1. Metals first\n2. Non-metals\n3. Polyatomic ions (if unchanged)\n4. Hydrogen\n5. Oxygen LAST' },
+  { f:'Polyatomic Ion Rule', b:'If a polyatomic ion appears unchanged on both sides of the equation, treat it as a single unit when counting atoms.' },
+  { f:'(aq) means...', b:'Aqueous — the substance is dissolved in water.' },
+  { f:'(s), (l), (g) mean...', b:'(s) = Solid\n(l) = Liquid\n(g) = Gas\nThese do NOT affect how you balance.' },
+  { f:'How to ID: Synthesis', b:'Exactly ONE product in the equation.\n\nExample: 2Na + Cl₂ → 2NaCl' },
+  { f:'How to ID: Decomposition', b:'Exactly ONE reactant in the equation.\n\nExample: 2KClO₃ → 2KCl + 3O₂' },
+  { f:'How to ID: Single Displacement', b:'One element alone reacts, one element comes out alone.\n\nExample: Zn + CuSO₄ → ZnSO₄ + Cu' },
+  { f:'How to ID: Double Displacement', b:'Two compounds react → two new compounds form. Cations swap.\n\nExample: BaCl₂ + Na₂SO₄ → BaSO₄ + 2NaCl' },
+  { f:'Common polyatomic ions', b:'NO₃⁻ = Nitrate\nSO₄²⁻ = Sulfate\nCO₃²⁻ = Carbonate\nOH⁻ = Hydroxide\nNH₄⁺ = Ammonium' },
+  { f:'What is a precipitate?', b:'A solid (shown as (s)) that forms when two solutions react in double displacement. An insoluble product.' },
+  { f:'Metal + Acid → Single Displacement', b:'Reactive metals displace H from acids because H forms H⁺ ions (like metals).\n\nZn + 2HCl → ZnCl₂ + H₂' },
+  { f:'LCM trick for balancing', b:'When balancing needs fractional coefficients, find the Least Common Multiple of the atom counts on each side, then scale up to get whole numbers.\n\nEx: 3O needed, O₂ gives 2 → LCM(3,2)=6' },
+  { f:'2Fe₂O₃ — how many Fe? How many O?', b:'2 × Fe₂O₃\nFe: 2 × 2 = 4 atoms\nO: 2 × 3 = 6 atoms\n\nAlways multiply coefficient × subscript.' },
+  { f:'Ca(OH)₂ — how many of each atom?', b:'Ca: 1\nO: 2 (from the bracket × 2)\nH: 2 (from the bracket × 2)\n\nBrackets multiply everything inside.' },
+];
+
+// ============================================================
+// STATE
+// ============================================================
+let gS = {};
+let currentGame = '';
+
+// ============================================================
+// UTILITY
+// ============================================================
+function $(id) { return document.getElementById(id); }
+function shuffle(a) { return [...a].sort(() => Math.random() - 0.5); }
+function pick(a, n) { return shuffle(a).slice(0, n); }
+
+function typeBadge(type) {
+  return '<span class="type-badge ' + TYPE_CLASS[type] + '">' + type + '</span>';
+}
+
+function eqHTML(eq) {
+  let idx = 0;
+  return eq.replace(/\?/g, () => {
+    const i = idx++;
+    return '<input class="coeff-input" id="inp' + i + '" type="number" min="1" max="99" placeholder="?" autocomplete="off">';
+  });
+}
+
+function readInputs(n) {
+  const vals = [];
+  for (let i = 0; i < n; i++) {
+    const el = $('inp' + i);
+    vals.push(el ? parseInt(el.value) || NaN : NaN);
+  }
+  return vals;
+}
+
+// ============================================================
+// NAVIGATION
+// ============================================================
 function showSection(id) {
   document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
-  document.querySelectorAll('.nav-btn').forEach((b,i) => {
+  $(id).classList.add('active');
+  document.querySelectorAll('.nav-btn').forEach((b, i) => {
     b.classList.toggle('active', ['home','learn','games'][i] === id);
   });
-  window.scrollTo(0,0);
+  window.scrollTo(0, 0);
 }
-function showLearn(id) {
-  document.querySelectorAll('.learn-content > div').forEach(d => d.classList.remove('active'));
-  document.querySelectorAll('.learn-nav-item').forEach(b => b.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
-  event.currentTarget.classList.add('active');
+
+function showLearn(id, btn) {
+  document.querySelectorAll('.l-content > div').forEach(d => d.classList.remove('active'));
+  document.querySelectorAll('.l-nav-btn').forEach(b => b.classList.remove('active'));
+  $(id).classList.add('active');
+  btn.classList.add('active');
 }
-function handleOverlayClick(e) {
-  if(e.target === document.getElementById('overlay')) closeModal();
-}
-function closeModal() {
-  document.getElementById('overlay').classList.remove('open');
-}
+
+// ============================================================
+// MODAL
+// ============================================================
 function openModal(html) {
-  document.getElementById('modal-content').innerHTML = html;
-  document.getElementById('overlay').classList.add('open');
+  $('modal').innerHTML = html;
+  $('overlay').classList.add('open');
+  setTimeout(() => {
+    const first = $('modal').querySelector('.coeff-input, .text-inp');
+    if (first) first.focus();
+  }, 80);
 }
 
-// ===================== GAME DATA =====================
-const balanceEquations = [
-  { eq: 'N₂ + H₂ → NH₃', coeffs: [1,3,2], formatted: '__ N₂ + __ H₂ → __ NH₃', answer: [1,3,2] },
-  { eq: 'Na + Cl₂ → NaCl', coeffs: [2,1,2], formatted: '__ Na + __ Cl₂ → __ NaCl', answer: [2,1,2] },
-  { eq: 'Fe + O₂ → Fe₂O₃', coeffs: [4,3,2], formatted: '__ Fe + __ O₂ → __ Fe₂O₃', answer: [4,3,2] },
-  { eq: 'H₂ + O₂ → H₂O', coeffs: [2,1,2], formatted: '__ H₂ + __ O₂ → __ H₂O', answer: [2,1,2] },
-  { eq: 'Al + O₂ → Al₂O₃', coeffs: [4,3,2], formatted: '__ Al + __ O₂ → __ Al₂O₃', answer: [4,3,2] },
-  { eq: 'Mg + HCl → MgCl₂ + H₂', coeffs: [1,2,1,1], formatted: '__ Mg + __ HCl → __ MgCl₂ + __ H₂', answer: [1,2,1,1] },
-  { eq: 'KClO₃ → KCl + O₂', coeffs: [2,2,3], formatted: '__ KClO₃ → __ KCl + __ O₂', answer: [2,2,3] },
-  { eq: 'C + O₂ → CO₂', coeffs: [1,1,1], formatted: '__ C + __ O₂ → __ CO₂', answer: [1,1,1] },
-  { eq: 'Na + H₂O → NaOH + H₂', coeffs: [2,2,2,1], formatted: '__ Na + __ H₂O → __ NaOH + __ H₂', answer: [2,2,2,1] },
-  { eq: 'P + O₂ → P₂O₅', coeffs: [4,5,2], formatted: '__ P + __ O₂ → __ P₂O₅', answer: [4,5,2] },
-];
-const reactionTypes = [
-  { eq: '2Na + Cl₂ → 2NaCl', answer: 'Synthesis', hint: 'Two reactants form one product' },
-  { eq: '2H₂O → 2H₂ + O₂', answer: 'Decomposition', hint: 'One reactant breaks into multiple products' },
-  { eq: 'Li + NaCl → LiCl + Na', answer: 'Single Displacement', hint: 'One element replaces another in a compound' },
-  { eq: 'Pb(NO₃)₂ + 2KI → PbI₂ + 2KNO₃', answer: 'Double Displacement', hint: 'Two compounds swap ions' },
-  { eq: 'C₃H₈ + 5O₂ → 3CO₂ + 4H₂O', answer: 'Combustion', hint: 'Hydrocarbon + oxygen reaction' },
-  { eq: '2H₂ + O₂ → 2H₂O', answer: 'Synthesis', hint: 'Elements combining into one compound' },
-  { eq: 'CaCO₃ → CaO + CO₂', answer: 'Decomposition', hint: 'One compound splits apart' },
-  { eq: 'Fe + CuSO₄ → FeSO₄ + Cu', answer: 'Single Displacement', hint: 'Metal displaces another metal' },
-  { eq: 'NaCl + AgNO₃ → AgCl + NaNO₃', answer: 'Double Displacement', hint: 'Ionic compounds exchange cations' },
-  { eq: '2Mg + O₂ → 2MgO', answer: 'Combustion', hint: 'Elemental combustion — metal + oxygen' },
-  { eq: 'N₂ + 3H₂ → 2NH₃', answer: 'Synthesis', hint: 'Multiple elements join into one compound' },
-  { eq: '2KClO₃ → 2KCl + 3O₂', answer: 'Decomposition', hint: 'One compound produces more products' },
-];
-const tfQuestions = [
-  { q: 'You can change subscripts to balance an equation.', a: false, exp: 'Never! Only coefficients (numbers in front) can be changed.' },
-  { q: 'Oxygen gas must be written as O₂ when it appears alone.', a: true, exp: 'Correct. Oxygen is a diatomic element — always O₂ alone.' },
-  { q: 'The Law of Conservation of Mass says matter can be created in a reaction.', a: false, exp: 'Wrong. Matter cannot be created or destroyed — only rearranged.' },
-  { q: '(aq) means a substance is dissolved in water.', a: true, exp: 'Correct. Aqueous = dissolved in water.' },
-  { q: 'In combustion, oxygen is balanced first.', a: false, exp: 'Wrong. Oxygen is always balanced LAST in combustion (after C and H).' },
-  { q: 'H₂, N₂, O₂, F₂, Cl₂, Br₂, and I₂ are all diatomic elements.', a: true, exp: 'Correct — the "Have No Fear Of Ice Cold Beverages" group.' },
-  { q: 'In a synthesis reaction, two reactants form one product.', a: true, exp: 'Correct. A + B → AB is the general pattern for synthesis.' },
-  { q: 'Coefficients of 1 must be written in the final balanced equation.', a: false, exp: 'No — if the coefficient is 1, you leave it out.' },
-  { q: 'A polyatomic ion that stays unchanged on both sides should be treated as a single unit.', a: true, exp: 'Correct. This makes balancing much faster.' },
-  { q: 'Decomposition reactions always require exactly two products.', a: false, exp: 'They can produce two or more products — not necessarily exactly two.' },
-  { q: 'In a single displacement reaction, a metal can replace hydrogen from an acid.', a: true, exp: 'Correct — hydrogen forms H⁺ ions just like metals do.' },
-  { q: 'Incomplete combustion produces only CO₂ and H₂O.', a: false, exp: 'Incomplete combustion also produces CO and C (soot) due to insufficient oxygen.' },
-  { q: '(s) means a substance is dissolved in water.', a: false, exp: '(s) = solid. (aq) = dissolved in water.' },
-  { q: 'Double displacement involves two ionic compounds swapping ions.', a: true, exp: 'Correct. AB + CD → AD + CB.' },
-];
-const mcqQuestions = [
-  { q: 'What does (aq) stand for?', choices: ['Solid', 'Aqueous (dissolved in water)', 'Gas', 'Liquid'], answer: 1 },
-  { q: 'Which of the following is a diatomic element?', choices: ['Ca', 'Fe', 'Cl₂', 'Na'], answer: 2 },
-  { q: 'What law requires chemical equations to be balanced?', choices: ['Newton\'s Third Law', 'Law of Conservation of Mass', 'Avogadro\'s Law', 'Charles\'s Law'], answer: 1 },
-  { q: 'In a double displacement reaction, what happens?', choices: ['One element replaces another', 'Two compounds swap their ions', 'A compound breaks apart', 'Two elements combine'], answer: 1 },
-  { q: 'What reaction type is: CaCO₃ → CaO + CO₂?', choices: ['Synthesis', 'Single Displacement', 'Combustion', 'Decomposition'], answer: 3 },
-  { q: 'When balancing combustion of a hydrocarbon, what do you balance last?', choices: ['Carbon', 'Hydrogen', 'Oxygen', 'Nitrogen'], answer: 2 },
-  { q: 'What is the correct coefficient for H₂ to balance: N₂ + _H₂ → 2NH₃?', choices: ['1', '2', '3', '4'], answer: 2 },
-  { q: 'What does the (s) notation mean?', choices: ['Aqueous solution', 'Solid', 'Saturated', 'Gas'], answer: 1 },
-  { q: 'What type is: 2H₂ + O₂ → 2H₂O + energy?', choices: ['Decomposition', 'Single Displacement', 'Combustion / Synthesis', 'Double Displacement'], answer: 2 },
-  { q: 'Which change is ILLEGAL when balancing equations?', choices: ['Changing a coefficient from 1 to 2', 'Changing a subscript from 2 to 3', 'Adding a coefficient in front', 'Leaving a coefficient as 1'], answer: 1 },
-  { q: 'What is produced in INCOMPLETE combustion that is NOT in complete combustion?', choices: ['CO₂ and H₂O', 'CO and C (soot)', 'N₂ and H₂O', 'O₂ and CO₂'], answer: 1 },
-  { q: 'In single displacement, what replaces what in: Zn + 2HCl → H₂ + ZnCl₂?', choices: ['Cl replaces H', 'Zn replaces H', 'H replaces Zn', 'Cl replaces Zn'], answer: 1 },
-];
-const fillBlankData = [
-  { display: '__ N₂ + 3H₂ → 2NH₃', blanks: [{ pos: 0, answer: 1 }], full: '1 N₂ + 3H₂ → 2NH₃' },
-  { display: '2Na + __ Cl₂ → 2NaCl', blanks: [{ pos: 1, answer: 1 }], full: '2Na + 1 Cl₂ → 2NaCl' },
-  { display: '__ Fe + 3O₂ → 2Fe₂O₃', blanks: [{ pos: 0, answer: 4 }], full: '4Fe + 3O₂ → 2Fe₂O₃' },
-  { display: '2H₂ + O₂ → __ H₂O', blanks: [{ pos: 2, answer: 2 }], full: '2H₂ + O₂ → 2H₂O' },
-  { display: 'C₃H₈ + 5O₂ → 3CO₂ + __ H₂O', blanks: [{ pos: 3, answer: 4 }], full: 'C₃H₈ + 5O₂ → 3CO₂ + 4H₂O' },
-  { display: '__ KClO₃ → 2KCl + 3O₂', blanks: [{ pos: 0, answer: 2 }], full: '2KClO₃ → 2KCl + 3O₂' },
-  { display: '4Al + __ O₂ → 2Al₂O₃', blanks: [{ pos: 1, answer: 3 }], full: '4Al + 3O₂ → 2Al₂O₃' },
-  { display: '__ Na + 2H₂O → 2NaOH + H₂', blanks: [{ pos: 0, answer: 2 }], full: '2Na + 2H₂O → 2NaOH + H₂' },
-  { display: '2H₂O → __ H₂ + O₂', blanks: [{ pos: 1, answer: 2 }], full: '2H₂O → 2H₂ + O₂' },
-  { display: 'Pb(NO₃)₂ + __ KI → PbI₂ + 2KNO₃', blanks: [{ pos: 1, answer: 2 }], full: 'Pb(NO₃)₂ + 2KI → PbI₂ + 2KNO₃' },
-];
-const combustionEquations = [
-  { fuel: 'CH₄', name: 'methane', c:1, h:4, balanced: 'CH₄ + 2O₂ → CO₂ + 2H₂O', co2: 1, h2o: 2, o2: 2 },
-  { fuel: 'C₂H₆', name: 'ethane', c:2, h:6, balanced: 'C₂H₆ + 3.5O₂ → 2CO₂ + 3H₂O', co2: 2, h2o: 3, o2: 7, note: '(multiply by 2: 2C₂H₆ + 7O₂ → 4CO₂ + 6H₂O)' },
-  { fuel: 'C₃H₈', name: 'propane', c:3, h:8, balanced: 'C₃H₈ + 5O₂ → 3CO₂ + 4H₂O', co2: 3, h2o: 4, o2: 5 },
-  { fuel: 'C₄H₁₀', name: 'butane', c:4, h:10, balanced: '2C₄H₁₀ + 13O₂ → 8CO₂ + 10H₂O', co2: 8, h2o: 10, o2: 13, fuelCoeff: 2 },
-];
-const flashcardData = [
-  { front: 'Law of Conservation of Mass', back: 'Matter cannot be created or destroyed in a chemical reaction — atoms on both sides must be equal.' },
-  { front: '(aq)', back: 'Aqueous — the substance is dissolved in water.' },
-  { front: '(s)', back: 'Solid — the substance is in a solid state.' },
-  { front: '(g)', back: 'Gas — the substance is in a gaseous state.' },
-  { front: '(l)', back: 'Liquid — the substance is in a liquid state (not dissolved in water).' },
-  { front: 'Synthesis Reaction', back: 'A + B → AB\nTwo or more reactants combine into ONE product.' },
-  { front: 'Decomposition Reaction', back: 'AB → A + B\nONE reactant breaks into two or more products.' },
-  { front: 'Single Displacement', back: 'A + BC → AC + B\nOne element replaces a similar element in a compound.' },
-  { front: 'Double Displacement', back: 'AB + CD → AD + CB\nTwo ionic compounds exchange their ions.' },
-  { front: 'Combustion Reaction', back: 'Fuel + O₂ → oxides + energy\nRapid reaction with oxygen releasing large energy.' },
-  { front: 'The 7 Diatomic Elements', back: 'H₂, N₂, O₂, F₂, Cl₂, Br₂, I₂\n"Have No Fear Of Ice Cold Beverages"' },
-  { front: 'Coefficient', back: 'The large number in front of a chemical formula. This is the ONLY thing you can change when balancing.' },
-  { front: 'Subscript', back: 'The small number after an element symbol (e.g., the 2 in H₂O). NEVER change this — it changes the substance.' },
-  { front: 'Polyatomic Ion', back: 'A group of atoms that acts as a single charged unit. If unchanged across a reaction, treat it as one unit (e.g., NO₃⁻, SO₄²⁻).' },
-  { front: 'Balancing Order', back: '1. Metals\n2. Non-metals\n3. Polyatomic ions\n4. Hydrogen\n5. Oxygen (LAST)' },
-  { front: 'Complete Combustion of Hydrocarbons', back: 'CₓHᵧ + O₂ → CO₂ + H₂O + energy\nRequires enough oxygen to fully react all fuel.' },
-  { front: 'Incomplete Combustion', back: 'CₓHᵧ + O₂ → CO₂ + H₂O + CO + C + energy\nNot enough oxygen — also produces deadly carbon monoxide (CO) and soot (C).' },
-];
-
-// ===================== GAME STATES =====================
-let gState = {};
-
-function openGame(id) {
-  gState = {};
-  if(id === 'g-balance') startBalance();
-  else if(id === 'g-identify') startIdentify();
-  else if(id === 'g-notation') startNotation();
-  else if(id === 'g-diatomic') startDiatomic();
-  else if(id === 'g-truefalsegame') startTrueFalse();
-  else if(id === 'g-atom-count') startAtomCount();
-  else if(id === 'g-combustion') startCombustion();
-  else if(id === 'g-speed') startSpeed();
-  else if(id === 'g-mcq') startMCQ();
-  else if(id === 'g-product') startProduct();
-  else if(id === 'g-fillblank') startFillBlank();
-  else if(id === 'g-flash') startFlash();
+function closeModal() {
+  if (gS.timer) clearInterval(gS.timer);
+  $('overlay').classList.remove('open');
+  gS = {};
+  currentGame = '';
+  loadBestScores();
 }
 
-function shuffle(arr) { return [...arr].sort(() => Math.random() - 0.5); }
-function pick(arr, n) { return shuffle(arr).slice(0, n); }
-function rnd(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+function overlayClick(e) {
+  if (e.target === $('overlay')) closeModal();
+}
 
-// ===================== GAME: COEFFICIENT FIXER =====================
-function startBalance() {
-  gState = { questions: shuffle(balanceEquations), idx: 0, score: 0, total: 8 };
-  gState.questions = gState.questions.slice(0, gState.total);
+// ============================================================
+// PARTICLES + FLASH
+// ============================================================
+function spawnParticles(x, y) {
+  const colors = ['#00e5a0','#fbbf24','#a78bfa','#f87171','#ffffff'];
+  for (let i = 0; i < 14; i++) {
+    const p = document.createElement('div');
+    const angle = (i / 14) * Math.PI * 2;
+    const dist = 50 + Math.random() * 50;
+    const color = colors[i % colors.length];
+    const size = 5 + Math.random() * 5;
+    p.className = 'particle';
+    p.style.cssText = 'left:' + x + 'px;top:' + y + 'px;width:' + size + 'px;height:' + size + 'px;background:' + color + ';--tx:' + (Math.cos(angle) * dist) + 'px;--ty:' + (Math.sin(angle) * dist) + 'px;';
+    document.body.appendChild(p);
+    setTimeout(() => p.remove(), 800);
+  }
+}
+
+function screenFlash(type) {
+  const el = $('flashOverlay');
+  el.className = 'flash-overlay flash-' + type;
+  el.style.opacity = '1';
+  setTimeout(() => { el.style.opacity = '0'; }, 120);
+}
+
+function shakeModal() {
+  const m = $('modal');
+  if (m) { m.classList.remove('shake'); void m.offsetWidth; m.classList.add('shake'); }
+}
+
+// ============================================================
+// TOAST
+// ============================================================
+let activeToast = null;
+function showToast(msg, cls) {
+  if (activeToast) { activeToast.remove(); }
+  const t = document.createElement('div');
+  t.className = 'toast ' + (cls || 't-info');
+  t.textContent = msg;
+  document.body.appendChild(t);
+  activeToast = t;
+  setTimeout(() => t.classList.add('show'), 10);
+  setTimeout(() => { t.classList.remove('show'); setTimeout(() => { t.remove(); if (activeToast === t) activeToast = null; }, 300); }, 2500);
+}
+
+function checkStreak(streak) {
+  if (streak === 3) showToast('🔥 3 in a row!', 't-streak');
+  else if (streak === 5) showToast('⚡ 5 in a row!', 't-streak');
+  else if (streak === 10) showToast('🏆 10 in a row! UNSTOPPABLE!', 't-streak');
+}
+
+// ============================================================
+// BEST SCORES (localStorage)
+// ============================================================
+function saveBest(game, score, total) {
+  const key = 'best_' + game;
+  const pct = Math.round((score / total) * 100);
+  const existing = parseInt(localStorage.getItem(key) || '0');
+  if (pct > existing) localStorage.setItem(key, pct);
+}
+
+function getBest(game) {
+  return localStorage.getItem('best_' + game);
+}
+
+function loadBestScores() {
+  const games = ['balance','identify','trueFalse','fillGap','mcq','predict','speed','flash'];
+  games.forEach(g => {
+    const el = $('best-' + g);
+    if (el) {
+      const v = getBest(g);
+      el.textContent = v ? 'Best: ' + v + '%' : 'Best: —';
+    }
+  });
+}
+
+// ============================================================
+// KEYBOARD SHORTCUTS
+// ============================================================
+document.addEventListener('keydown', function(e) {
+  if (!$('overlay').classList.contains('open')) return;
+  if (e.key === 'Escape') { closeModal(); return; }
+  if (e.key === 'Enter') {
+    const focused = document.activeElement;
+    if (focused && focused.classList.contains('coeff-input')) {
+      if (currentGame === 'balance') submitBalance();
+      else if (currentGame === 'fillGap') submitFillGap();
+      else if (currentGame === 'speed') submitSpeed();
+    } else if (focused && focused.classList.contains('text-inp')) {
+      if (currentGame === 'fillGap') submitFillGap();
+    }
+    return;
+  }
+  if (e.key.toLowerCase() === 'h') {
+    const hBtn = $('hintBtn');
+    if (hBtn && !hBtn.disabled) hBtn.click();
+    return;
+  }
+  if (e.key.toLowerCase() === 's') {
+    const sBtn = $('skipBtn');
+    if (sBtn) sBtn.click();
+  }
+});
+
+// ============================================================
+// GAME LAUNCHER
+// ============================================================
+function launchGame(name) {
+  currentGame = name;
+  gS = {};
+  if (name === 'balance') initBalance();
+  else if (name === 'identify') initIdentify();
+  else if (name === 'trueFalse') initTrueFalse();
+  else if (name === 'fillGap') initFillGap();
+  else if (name === 'mcq') initMCQ();
+  else if (name === 'predict') initPredict();
+  else if (name === 'speed') initSpeed();
+  else if (name === 'flash') initFlash();
+}
+
+// ============================================================
+// SHARED RESULT SCREEN
+// ============================================================
+function showResult(title, icon, score, total, wrongList) {
+  const pct = Math.round((score / total) * 100);
+  const grade = pct >= 90 ? '🏆 Outstanding!' : pct >= 75 ? '👍 Strong work!' : pct >= 60 ? '😐 Getting there — review weak spots' : '📖 Go back and read the notes';
+  saveBest(currentGame, score, total);
+  let wrongHTML = '';
+  if (wrongList && wrongList.length > 0) {
+    wrongHTML = '<div class="result-breakdown"><h4>Questions You Missed</h4>' +
+      wrongList.map(w => '<div class="wrong-item"><strong>✗ ' + w.q + '</strong> <span class="correct-ans"> → ' + w.a + '</span></div>').join('') + '</div>';
+  }
+  openModal(
+    '<button class="modal-x" onclick="closeModal()">✕</button>' +
+    '<div class="result-screen slide-in">' +
+    '<div style="font-size:2rem">' + icon + '</div>' +
+    '<div class="modal-title" style="margin-top:.5rem">' + title + '</div>' +
+    '<div class="result-score">' + score + '/' + total + '</div>' +
+    '<div class="result-label">' + grade + ' &nbsp;(' + pct + '%)</div>' +
+    wrongHTML +
+    '<div class="btn-row" style="justify-content:center">' +
+    '<button class="btn" onclick="launchGame(\'' + currentGame + '\')">Play Again</button>' +
+    '<button class="btn btn-ghost" onclick="closeModal()">Close</button>' +
+    '</div></div>'
+  );
+  loadBestScores();
+}
+
+// ============================================================
+// GAME 1: BALANCE IT
+// ============================================================
+function initBalance() {
+  gS = { qs: pick(BALANCE_Q, 12), idx: 0, score: 0, streak: 0, hints: 3, wrong: [] };
   renderBalance();
 }
+
 function renderBalance() {
-  const q = gState.questions[gState.idx];
-  const n = q.answer.length;
-  let inputsHtml = '';
-  for(let i=0;i<n;i++) inputsHtml += `<input class="coeff-input" id="ci${i}" type="number" min="1" max="20" placeholder="?" onkeydown="if(event.key==='Enter')checkBalance()">`;
-  openModal(`
-    <button class="modal-close" onclick="closeModal()">✕</button>
-    <div class="modal-title">⚖️ Coefficient Fixer</div>
-    <div class="modal-sub">Enter the correct coefficient for each blank. All coefficients must be in lowest whole numbers.</div>
-    <div class="score-bar">
-      <div class="score-chip">Score: <span id="bs-score">${gState.score}</span></div>
-      <div class="score-chip">Q: <span id="bs-q">${gState.idx+1}</span>/${gState.total}</div>
-    </div>
-    <div class="progress-bar"><div class="progress-fill" id="bp-fill" style="width:${(gState.idx/gState.total)*100}%"></div></div>
-    <div class="eq-display">${q.formatted}</div>
-    <div style="margin-bottom:1rem;">
-      <p style="font-size:0.8rem;color:var(--muted);margin-bottom:0.5rem;">Enter coefficients in order (left to right):</p>
-      <div style="display:flex;gap:0.5rem;flex-wrap:wrap;align-items:center;">${inputsHtml}</div>
-    </div>
-    <div class="feedback-box" id="bal-fb"></div>
-    <div class="btn-row">
-      <button class="btn" onclick="checkBalance()">Check Answer</button>
-      <button class="btn-secondary" onclick="showBalanceHint()">💡 Hint</button>
-    </div>
-  `);
-  setTimeout(() => document.getElementById('ci0') && document.getElementById('ci0').focus(), 100);
-}
-function showBalanceHint() {
-  const q = gState.questions[gState.idx];
-  const fb = document.getElementById('bal-fb');
-  if(fb) { fb.className = 'feedback-box info'; fb.textContent = `Hint: The answer has ${q.answer.length} coefficients. Try counting each atom type on both sides.`; }
-}
-function checkBalance() {
-  const q = gState.questions[gState.idx];
-  const n = q.answer.length;
-  let vals = [], allFilled = true;
-  for(let i=0;i<n;i++) {
-    const el = document.getElementById('ci'+i);
-    const v = parseInt(el.value);
-    if(isNaN(v)) { allFilled = false; break; }
-    vals.push(v);
+  if (gS.idx >= gS.qs.length) { showResult('Balance It', '⚖️', gS.score, gS.qs.length, gS.wrong); return; }
+  const q = gS.qs[gS.idx];
+  const n = q.ans.length;
+  openModal(
+    '<button class="modal-x" onclick="closeModal()">✕</button>' +
+    '<div class="modal-title">⚖️ Balance It</div>' +
+    '<div class="modal-sub">Enter coefficients in order (left → right). Use <span class="kb-hint">Enter</span> to submit.</div>' +
+    '<div class="stats-bar">' +
+    '<div class="stat-chip">Score: <span>' + gS.score + '</span></div>' +
+    '<div class="stat-chip streak">Streak: <span>' + gS.streak + '</span></div>' +
+    '<div class="stat-chip hints">Hints: <span>' + gS.hints + '</span></div>' +
+    '<div class="stat-chip">Q: <span>' + (gS.idx + 1) + '</span>/' + gS.qs.length + '</div>' +
+    '</div>' +
+    '<div class="prog-wrap"><div class="prog-bar" style="width:' + Math.round((gS.idx / gS.qs.length) * 100) + '%"></div></div>' +
+    typeBadge(q.type) +
+    '<div class="eq-display">' + eqHTML(q.eq) + '</div>' +
+    '<div class="feedback" id="fb">Fill in all ? boxes then press Check.</div>' +
+    '<div class="btn-row">' +
+    '<button class="btn" onclick="submitBalance()">Check ✓</button>' +
+    '<button class="btn btn-ghost" id="hintBtn" onclick="useHint()" ' + (gS.hints <= 0 ? 'disabled' : '') + '>💡 Hint (' + gS.hints + ')</button>' +
+    '<button class="btn btn-ghost" id="skipBtn" onclick="skipBalance()">Skip →</button>' +
+    '</div>'
+  );
+  // re-attach enter on inputs
+  for (let i = 0; i < n; i++) {
+    const el = $('inp' + i);
+    if (el) el.addEventListener('keydown', function(e) { if (e.key === 'Enter') submitBalance(); });
   }
-  if(!allFilled) { const fb=document.getElementById('bal-fb'); if(fb){fb.className='feedback-box bad';fb.textContent='Fill in all boxes first!';} return; }
-  let correct = vals.every((v,i) => v === q.answer[i]);
-  if(!correct) {
-    // check if proportionally scaled
-    const scale = vals[0] / q.answer[0];
-    if(scale > 1 && Number.isInteger(scale) && vals.every((v,i) => v === q.answer[i]*scale)) {
-      correct = false; // valid but not simplified
-      const fb=document.getElementById('bal-fb');
-      if(fb){fb.className='feedback-box bad';fb.textContent=`Almost! Your ratios are correct but reduce to lowest whole numbers. Answer: ${q.answer.join(' | ')}`;}
-      for(let i=0;i<n;i++){const el=document.getElementById('ci'+i);if(el)el.className='coeff-input wrong';}
-      return;
-    }
-  }
-  const fb = document.getElementById('bal-fb');
-  if(correct) {
-    gState.score++;
-    if(fb){fb.className='feedback-box good';fb.textContent='✓ Correct! Well balanced.';}
-    for(let i=0;i<n;i++){const el=document.getElementById('ci'+i);if(el)el.className='coeff-input correct';}
-  } else {
-    if(fb){fb.className='feedback-box bad';fb.textContent=`✗ Incorrect. Correct answer: ${q.answer.join(' | ')}`;}
-    for(let i=0;i<n;i++){const el=document.getElementById('ci'+i);if(el)el.className='coeff-input wrong';}
-  }
-  gState.idx++;
-  setTimeout(() => {
-    if(gState.idx >= gState.total) endBalance();
-    else renderBalance();
-  }, 1800);
-}
-function endBalance() {
-  const pct = Math.round((gState.score/gState.total)*100);
-  const grade = pct>=90?'🏆 Excellent!':pct>=70?'👍 Good Job!':pct>=50?'😐 Keep Practicing':'📖 Review the Notes';
-  openModal(`<button class="modal-close" onclick="closeModal()">✕</button>
-    <div class="game-over-screen fade-in">
-      <div class="modal-title">⚖️ Coefficient Fixer</div>
-      <div class="big-score">${gState.score}/${gState.total}</div>
-      <div class="grade">${grade} (${pct}%)</div>
-      <div class="btn-row" style="justify-content:center;margin-top:1.5rem;">
-        <button class="btn" onclick="startBalance()">Play Again</button>
-        <button class="btn-secondary" onclick="closeModal()">Close</button>
-      </div>
-    </div>`);
 }
 
-// ===================== GAME: REACTION ID =====================
-function startIdentify() {
-  const types = ['Synthesis','Decomposition','Single Displacement','Double Displacement','Combustion'];
-  gState = { questions: shuffle(reactionTypes).slice(0,10), idx: 0, score: 0, total: 10, types, done: false };
+function useHint() {
+  if (gS.hints <= 0) return;
+  gS.hints--;
+  const q = gS.qs[gS.idx];
+  const fb = $('fb');
+  if (fb) { fb.className = 'feedback info'; fb.textContent = '💡 ' + q.hint; }
+  const hBtn = $('hintBtn');
+  if (hBtn) { hBtn.textContent = '💡 Hint (' + gS.hints + ')'; if (gS.hints <= 0) hBtn.disabled = true; }
+}
+
+function submitBalance() {
+  const q = gS.qs[gS.idx];
+  const vals = readInputs(q.ans.length);
+  if (vals.some(isNaN)) {
+    const fb = $('fb');
+    if (fb) { fb.className = 'feedback'; fb.textContent = 'Fill in every box first!'; }
+    shakeModal();
+    return;
+  }
+  const correct = vals.every((v, i) => v === q.ans[i]);
+  // check if scaled (valid ratio but not simplified)
+  let scaled = false;
+  if (!correct && vals[0] !== 0) {
+    const scale = vals[0] / q.ans[0];
+    if (scale > 1 && Number.isInteger(scale) && vals.every((v, i) => v === q.ans[i] * scale)) scaled = true;
+  }
+  const fb = $('fb');
+  for (let i = 0; i < q.ans.length; i++) {
+    const el = $('inp' + i);
+    if (el) { el.disabled = true; el.className = 'coeff-input ' + (correct ? 'ok' : 'err'); }
+  }
+  if (correct) {
+    gS.score++;
+    gS.streak++;
+    screenFlash('good');
+    // find button position for particles
+    const btn = $('modal').querySelector('.btn');
+    if (btn) { const r = btn.getBoundingClientRect(); spawnParticles(r.left + r.width / 2, r.top); }
+    if (fb) { fb.className = 'feedback good'; fb.textContent = '✓ Correct! Well done.'; }
+    checkStreak(gS.streak);
+  } else {
+    gS.streak = 0;
+    screenFlash('bad');
+    shakeModal();
+    gS.wrong.push({ q: q.eq.replace(/\?/g, '_'), a: q.ans.join(' | ') });
+    if (scaled) {
+      if (fb) { fb.className = 'feedback bad'; fb.textContent = '✗ Ratios correct but not simplified. Answers: ' + q.ans.join(' | '); }
+    } else {
+      if (fb) { fb.className = 'feedback bad'; fb.textContent = '✗ Incorrect. Correct coefficients: ' + q.ans.join(' | '); }
+    }
+  }
+  gS.idx++;
+  setTimeout(renderBalance, correct ? 1400 : 2000);
+}
+
+function skipBalance() {
+  gS.streak = 0;
+  gS.wrong.push({ q: gS.qs[gS.idx].eq.replace(/\?/g, '_'), a: 'Skipped' });
+  gS.idx++;
+  renderBalance();
+}
+
+// ============================================================
+// GAME 2: REACTION IDENTIFIER
+// ============================================================
+function initIdentify() {
+  gS = { qs: pick(IDENTIFY_Q, 12), idx: 0, score: 0, streak: 0, wrong: [], done: false };
   renderIdentify();
 }
+
 function renderIdentify() {
-  if(gState.done) { endIdentify(); return; }
-  const q = gState.questions[gState.idx];
-  const opts = shuffle(gState.types);
-  openModal(`
-    <button class="modal-close" onclick="closeModal()">✕</button>
-    <div class="modal-title">🔬 Reaction ID</div>
-    <div class="modal-sub">Identify the type of reaction.</div>
-    <div class="score-bar">
-      <div class="score-chip">Score: <span>${gState.score}</span></div>
-      <div class="score-chip">Q: <span>${gState.idx+1}</span>/10</div>
-    </div>
-    <div class="progress-bar"><div class="progress-fill" style="width:${(gState.idx/10)*100}%"></div></div>
-    <div class="eq-display">${q.eq}</div>
-    <div class="choices-grid">
-      ${opts.map(o=>`<button class="choice-btn" onclick="checkIdentify('${o}',this)">${o}</button>`).join('')}
-    </div>
-    <div class="feedback-box" id="id-fb"></div>
-  `);
+  if (gS.done || gS.idx >= gS.qs.length) { showResult('Reaction Identifier', '🔬', gS.score, gS.qs.length, gS.wrong); return; }
+  const q = gS.qs[gS.idx];
+  const opts = shuffle([SYN, DEC, SNG, DBL]);
+  openModal(
+    '<button class="modal-x" onclick="closeModal()">✕</button>' +
+    '<div class="modal-title">🔬 Reaction Identifier</div>' +
+    '<div class="modal-sub">What type of reaction is this?</div>' +
+    '<div class="stats-bar">' +
+    '<div class="stat-chip">Score: <span>' + gS.score + '</span></div>' +
+    '<div class="stat-chip streak">Streak: <span>' + gS.streak + '</span></div>' +
+    '<div class="stat-chip">Q: <span>' + (gS.idx + 1) + '</span>/' + gS.qs.length + '</div>' +
+    '</div>' +
+    '<div class="prog-wrap"><div class="prog-bar" style="width:' + Math.round((gS.idx / gS.qs.length) * 100) + '%"></div></div>' +
+    '<div class="eq-display">' + q.eq + '</div>' +
+    '<div class="choices">' +
+    opts.map(o => '<button class="choice" onclick="checkIdentify(\'' + o.replace(/'/g, "\\'") + '\',this)">' + o + '</button>').join('') +
+    '</div>' +
+    '<div class="feedback" id="fb"></div>'
+  );
 }
+
 function checkIdentify(chosen, btn) {
-  const q = gState.questions[gState.idx];
-  const fb = document.getElementById('id-fb');
-  document.querySelectorAll('.choice-btn').forEach(b=>b.disabled=true);
-  if(chosen === q.answer) {
-    gState.score++;
-    btn.className='choice-btn correct-choice';
-    if(fb){fb.className='feedback-box good';fb.textContent=`✓ Correct! ${q.hint}`;}
+  const q = gS.qs[gS.idx];
+  document.querySelectorAll('.choice').forEach(b => b.disabled = true);
+  const fb = $('fb');
+  if (chosen === q.ans) {
+    gS.score++; gS.streak++;
+    btn.className = 'choice choice-ok';
+    if (fb) { fb.className = 'feedback good'; fb.textContent = '✓ Correct! ' + q.hint; }
+    screenFlash('good');
+    const r = btn.getBoundingClientRect(); spawnParticles(r.left + r.width / 2, r.top + r.height / 2);
+    checkStreak(gS.streak);
   } else {
-    btn.className='choice-btn wrong-choice';
-    document.querySelectorAll('.choice-btn').forEach(b=>{ if(b.textContent===q.answer) b.className='choice-btn correct-choice'; });
-    if(fb){fb.className='feedback-box bad';fb.textContent=`✗ It was ${q.answer}. ${q.hint}`;}
+    gS.streak = 0;
+    btn.className = 'choice choice-err';
+    document.querySelectorAll('.choice').forEach(b => { if (b.textContent === q.ans) b.className = 'choice choice-ok'; });
+    if (fb) { fb.className = 'feedback bad'; fb.textContent = '✗ It was ' + q.ans + '. ' + q.hint; }
+    gS.wrong.push({ q: q.eq, a: q.ans });
+    screenFlash('bad');
   }
-  gState.idx++;
-  if(gState.idx >= gState.total) gState.done = true;
-  setTimeout(() => renderIdentify(), 1600);
-}
-function endIdentify() {
-  const pct = Math.round((gState.score/gState.total)*100);
-  const grade = pct>=90?'🏆 Excellent!':pct>=70?'👍 Good Job!':pct>=50?'😐 Keep Practicing':'📖 Review Reaction Types';
-  openModal(`<button class="modal-close" onclick="closeModal()">✕</button>
-    <div class="game-over-screen fade-in">
-      <div class="modal-title">🔬 Reaction ID</div>
-      <div class="big-score">${gState.score}/${gState.total}</div>
-      <div class="grade">${grade} (${pct}%)</div>
-      <div class="btn-row" style="justify-content:center;margin-top:1.5rem;">
-        <button class="btn" onclick="startIdentify()">Play Again</button>
-        <button class="btn-secondary" onclick="closeModal()">Close</button>
-      </div>
-    </div>`);
+  gS.idx++;
+  setTimeout(renderIdentify, 1800);
 }
 
-// ===================== GAME: NOTATION MATCH =====================
-function startNotation() {
-  gState = {
-    symbols: ['(s)','(l)','(g)','(aq)'],
-    meanings: ['Solid', 'Liquid', 'Gas', 'Aqueous (in water)'],
-    map: {0:0,1:1,2:2,3:3},
-    selected: null,
-    selectedType: null,
-    matched: [],
-    score: 0
-  };
-  renderNotation();
-}
-function renderNotation() {
-  const shuffledMeanings = gState.matched.length === 0 ? shuffle(gState.meanings) : gState._shuffledM || shuffle(gState.meanings);
-  if(!gState._shuffledM) gState._shuffledM = shuffledMeanings;
-  const sm = gState._shuffledM;
-  openModal(`
-    <button class="modal-close" onclick="closeModal()">✕</button>
-    <div class="modal-title">🏷️ Notation Match</div>
-    <div class="modal-sub">Click a symbol, then click its matching meaning.</div>
-    <div class="score-chip" style="margin-bottom:1rem;">Matched: <span>${gState.matched.length}/4</span></div>
-    <div class="match-grid">
-      <div class="match-col">
-        ${gState.symbols.map((s,i)=>`<div class="match-item${gState.matched.includes(i)?' matched':gState.selected===i&&gState.selectedType==='sym'?' selected':''}" id="sym-${i}" onclick="selectNotation(${i},'sym')" style="font-size:1.1rem;">${s}</div>`).join('')}
-      </div>
-      <div class="match-col">
-        ${sm.map((m,i)=>`<div class="match-item${gState.matched.includes(gState.meanings.indexOf(m))?' matched':gState.selected===gState.meanings.indexOf(m)&&gState.selectedType==='mean'?' selected':''}" id="mean-${gState.meanings.indexOf(m)}" onclick="selectNotation(${gState.meanings.indexOf(m)},'mean')">${m}</div>`).join('')}
-      </div>
-    </div>
-    <div class="feedback-box" id="not-fb"></div>
-  `);
-}
-function selectNotation(idx, type) {
-  if(gState.matched.includes(idx)) return;
-  if(gState.selected === null) {
-    gState.selected = idx;
-    gState.selectedType = type;
-    renderNotation();
-    return;
-  }
-  if(gState.selectedType === type) {
-    gState.selected = idx;
-    gState.selectedType = type;
-    renderNotation();
-    return;
-  }
-  // check match
-  let symIdx = type === 'sym' ? idx : gState.selected;
-  let meanIdx = type === 'mean' ? idx : gState.selected;
-  if(symIdx === meanIdx) {
-    gState.matched.push(symIdx);
-    gState.score++;
-    gState.selected = null;
-    gState.selectedType = null;
-    renderNotation();
-    const fb = document.getElementById('not-fb');
-    if(fb) { fb.className='feedback-box good'; fb.textContent='✓ Correct match!'; }
-    if(gState.matched.length === 4) {
-      setTimeout(() => {
-        openModal(`<button class="modal-close" onclick="closeModal()">✕</button>
-          <div class="game-over-screen fade-in">
-            <div class="modal-title">🏷️ Notation Match</div>
-            <div class="big-score">4/4</div>
-            <div class="grade">🏆 Perfect! You know all notation.</div>
-            <div class="btn-row" style="justify-content:center;margin-top:1.5rem;">
-              <button class="btn" onclick="startNotation()">Play Again</button>
-              <button class="btn-secondary" onclick="closeModal()">Close</button>
-            </div>
-          </div>`);
-      }, 800);
-    }
-  } else {
-    const fb = document.getElementById('not-fb');
-    if(fb) { fb.className='feedback-box bad'; fb.textContent='✗ Not a match. Try again.'; }
-    gState.selected = null;
-    gState.selectedType = null;
-    setTimeout(() => renderNotation(), 800);
-  }
-}
-
-// ===================== GAME: DIATOMIC QUIZ =====================
-const allElements = [
-  {sym:'H',name:'Hydrogen',diatomic:true},{sym:'He',name:'Helium',diatomic:false},
-  {sym:'N',name:'Nitrogen',diatomic:true},{sym:'O',name:'Oxygen',diatomic:true},
-  {sym:'F',name:'Fluorine',diatomic:true},{sym:'Ne',name:'Neon',diatomic:false},
-  {sym:'Cl',name:'Chlorine',diatomic:true},{sym:'Ar',name:'Argon',diatomic:false},
-  {sym:'Br',name:'Bromine',diatomic:true},{sym:'I',name:'Iodine',diatomic:true},
-  {sym:'Na',name:'Sodium',diatomic:false},{sym:'Mg',name:'Magnesium',diatomic:false},
-  {sym:'Ca',name:'Calcium',diatomic:false},{sym:'Fe',name:'Iron',diatomic:false},
-  {sym:'Cu',name:'Copper',diatomic:false},{sym:'Zn',name:'Zinc',diatomic:false},
-  {sym:'S',name:'Sulfur',diatomic:false},{sym:'P',name:'Phosphorus',diatomic:false},
-  {sym:'C',name:'Carbon',diatomic:false},{sym:'K',name:'Potassium',diatomic:false},
-];
-function startDiatomic() {
-  gState = { questions: shuffle(allElements).slice(0,12), idx:0, score:0, total:12, answered:false };
-  renderDiatomic();
-}
-function renderDiatomic() {
-  if(gState.idx >= gState.total) { endDiatomic(); return; }
-  const q = gState.questions[gState.idx];
-  openModal(`
-    <button class="modal-close" onclick="closeModal()">✕</button>
-    <div class="modal-title">🧬 Diatomic Quiz</div>
-    <div class="modal-sub">Is this element diatomic (always appears as a pair, e.g. X₂)?</div>
-    <div class="score-bar">
-      <div class="score-chip">Score: <span>${gState.score}</span></div>
-      <div class="score-chip">Q: <span>${gState.idx+1}</span>/${gState.total}</div>
-    </div>
-    <div class="progress-bar"><div class="progress-fill" style="width:${(gState.idx/gState.total)*100}%"></div></div>
-    <div class="eq-display" style="font-size:2rem;font-weight:800;">${q.sym}</div>
-    <p style="text-align:center;color:var(--muted);font-size:0.9rem;margin-bottom:1.5rem;">${q.name}</p>
-    <div style="display:flex;gap:1rem;justify-content:center;">
-      <button class="btn tf-btn tf-true" onclick="checkDiatomic(true)">Yes — Diatomic (${q.sym}₂)</button>
-      <button class="btn tf-btn tf-false" onclick="checkDiatomic(false)">No — Single Atom</button>
-    </div>
-    <div class="feedback-box" style="margin-top:1rem;" id="dia-fb"></div>
-  `);
-}
-function checkDiatomic(answer) {
-  const q = gState.questions[gState.idx];
-  const fb = document.getElementById('dia-fb');
-  document.querySelectorAll('.tf-btn').forEach(b=>b.disabled=true);
-  if(answer === q.diatomic) {
-    gState.score++;
-    if(fb){fb.className='feedback-box good';fb.textContent=`✓ Correct! ${q.sym} is ${q.diatomic?'diatomic ('+q.sym+'₂)':'not diatomic — appears as a single atom'}.`;}
-  } else {
-    if(fb){fb.className='feedback-box bad';fb.textContent=`✗ Wrong. ${q.sym} (${q.name}) is ${q.diatomic?'DIATOMIC — always written as '+q.sym+'₂':'NOT diatomic — appears as a single '+q.sym+' atom'}.`;}
-  }
-  gState.idx++;
-  setTimeout(() => renderDiatomic(), 1600);
-}
-function endDiatomic() {
-  const pct = Math.round((gState.score/gState.total)*100);
-  openModal(`<button class="modal-close" onclick="closeModal()">✕</button>
-    <div class="game-over-screen fade-in">
-      <div class="modal-title">🧬 Diatomic Quiz</div>
-      <div class="big-score">${gState.score}/${gState.total}</div>
-      <div class="grade">${pct>=90?'🏆 Expert!':pct>=70?'👍 Solid!':'📖 Review the 7 diatomics: H₂ N₂ O₂ F₂ Cl₂ Br₂ I₂'}</div>
-      <div class="btn-row" style="justify-content:center;margin-top:1.5rem;">
-        <button class="btn" onclick="startDiatomic()">Play Again</button>
-        <button class="btn-secondary" onclick="closeModal()">Close</button>
-      </div>
-    </div>`);
-}
-
-// ===================== GAME: TRUE OR FALSE =====================
-function startTrueFalse() {
-  gState = { questions: shuffle(tfQuestions).slice(0,12), idx:0, score:0, total:12 };
+// ============================================================
+// GAME 3: TRUE OR FALSE
+// ============================================================
+function initTrueFalse() {
+  gS = { qs: pick(TF_Q, 14), idx: 0, score: 0, streak: 0, wrong: [] };
   renderTF();
 }
+
 function renderTF() {
-  if(gState.idx >= gState.total) { endTF(); return; }
-  const q = gState.questions[gState.idx];
-  openModal(`
-    <button class="modal-close" onclick="closeModal()">✕</button>
-    <div class="modal-title">✅ True or False</div>
-    <div class="modal-sub">Is this statement true or false?</div>
-    <div class="score-bar">
-      <div class="score-chip">Score: <span>${gState.score}</span></div>
-      <div class="score-chip">Q: <span>${gState.idx+1}</span>/${gState.total}</div>
-    </div>
-    <div class="progress-bar"><div class="progress-fill" style="width:${(gState.idx/gState.total)*100}%"></div></div>
-    <div class="eq-display" style="font-size:0.95rem;font-family:var(--sans);line-height:1.5;text-align:left;padding:1.5rem;">"${q.q}"</div>
-    <div style="display:flex;gap:1rem;justify-content:center;margin-bottom:1rem;">
-      <button class="btn tf-btn tf-true" onclick="checkTF(true)">✓ TRUE</button>
-      <button class="btn tf-btn tf-false" onclick="checkTF(false)">✗ FALSE</button>
-    </div>
-    <div class="feedback-box" id="tf-fb"></div>
-  `);
-}
-function checkTF(answer) {
-  const q = gState.questions[gState.idx];
-  const fb = document.getElementById('tf-fb');
-  document.querySelectorAll('.tf-btn').forEach(b=>b.disabled=true);
-  if(answer === q.a) {
-    gState.score++;
-    if(fb){fb.className='feedback-box good';fb.textContent='✓ Correct! '+q.exp;}
-  } else {
-    if(fb){fb.className='feedback-box bad';fb.textContent='✗ Wrong. '+q.exp;}
-  }
-  gState.idx++;
-  setTimeout(() => renderTF(), 2000);
-}
-function endTF() {
-  const pct = Math.round((gState.score/gState.total)*100);
-  openModal(`<button class="modal-close" onclick="closeModal()">✕</button>
-    <div class="game-over-screen fade-in">
-      <div class="modal-title">✅ True or False</div>
-      <div class="big-score">${gState.score}/${gState.total}</div>
-      <div class="grade">${pct>=90?'🏆 Outstanding!':pct>=70?'👍 Good Work!':pct>=50?'😐 Getting There':'📖 Review the rules again'} (${pct}%)</div>
-      <div class="btn-row" style="justify-content:center;margin-top:1.5rem;">
-        <button class="btn" onclick="startTrueFalse()">Play Again</button>
-        <button class="btn-secondary" onclick="closeModal()">Close</button>
-      </div>
-    </div>`);
+  if (gS.idx >= gS.qs.length) { showResult('True or False', '✅', gS.score, gS.qs.length, gS.wrong); return; }
+  const q = gS.qs[gS.idx];
+  openModal(
+    '<button class="modal-x" onclick="closeModal()">✕</button>' +
+    '<div class="modal-title">✅ True or False</div>' +
+    '<div class="modal-sub">Is the statement true or false?</div>' +
+    '<div class="stats-bar">' +
+    '<div class="stat-chip">Score: <span>' + gS.score + '</span></div>' +
+    '<div class="stat-chip streak">Streak: <span>' + gS.streak + '</span></div>' +
+    '<div class="stat-chip">Q: <span>' + (gS.idx + 1) + '</span>/' + gS.qs.length + '</div>' +
+    '</div>' +
+    '<div class="prog-wrap"><div class="prog-bar" style="width:' + Math.round((gS.idx / gS.qs.length) * 100) + '%"></div></div>' +
+    '<div class="eq-display" style="font-family:var(--sans);font-size:.92rem;text-align:left;line-height:1.6;padding:1.25rem">"' + q.q + '"</div>' +
+    '<div class="tf-row">' +
+    '<button class="tf-t" id="tfT" onclick="checkTF(true)">✓ TRUE</button>' +
+    '<button class="tf-f" id="tfF" onclick="checkTF(false)">✗ FALSE</button>' +
+    '</div>' +
+    '<div class="feedback" id="fb"></div>'
+  );
 }
 
-// ===================== GAME: ATOM COUNTER =====================
-const atomCountData = [
-  { eq: '2Fe₂O₃', side: 'right', counts: [{el:'Fe',n:4},{el:'O',n:6}], ask: 'Fe', answer: 4 },
-  { eq: '3H₂O', side: 'product', counts: [{el:'H',n:6},{el:'O',n:3}], ask: 'H', answer: 6 },
-  { eq: '2Ca(OH)₂', side: 'right', counts: [{el:'Ca',n:2},{el:'O',n:4},{el:'H',n:4}], ask: 'O', answer: 4 },
-  { eq: '4Al + 3O₂', side: 'left', counts: [{el:'Al',n:4},{el:'O',n:6}], ask: 'O', answer: 6 },
-  { eq: '2NH₃', side: 'right', counts: [{el:'N',n:2},{el:'H',n:6}], ask: 'H', answer: 6 },
-  { eq: '3CO₂', side: 'product', counts: [{el:'C',n:3},{el:'O',n:6}], ask: 'O', answer: 6 },
-  { eq: 'Pb(NO₃)₂', side: 'reactant', counts: [{el:'Pb',n:1},{el:'N',n:2},{el:'O',n:6}], ask: 'O', answer: 6 },
-  { eq: '2NaOH', side: 'product', counts: [{el:'Na',n:2},{el:'O',n:2},{el:'H',n:2}], ask: 'Na', answer: 2 },
-  { eq: '5O₂', side: 'reactant', counts: [{el:'O',n:10}], ask: 'O', answer: 10 },
-  { eq: '2KClO₃', side: 'reactant', counts: [{el:'K',n:2},{el:'Cl',n:2},{el:'O',n:6}], ask: 'O', answer: 6 },
-];
-function startAtomCount() {
-  gState = { questions: shuffle(atomCountData).slice(0,8), idx:0, score:0, total:8 };
-  renderAtomCount();
-}
-function renderAtomCount() {
-  if(gState.idx >= gState.total) { endAtomCount(); return; }
-  const q = gState.questions[gState.idx];
-  openModal(`
-    <button class="modal-close" onclick="closeModal()">✕</button>
-    <div class="modal-title">🔢 Atom Counter</div>
-    <div class="modal-sub">Count the atoms carefully — watch out for coefficients and subscripts!</div>
-    <div class="score-bar">
-      <div class="score-chip">Score: <span>${gState.score}</span></div>
-      <div class="score-chip">Q: <span>${gState.idx+1}</span>/${gState.total}</div>
-    </div>
-    <div class="progress-bar"><div class="progress-fill" style="width:${(gState.idx/gState.total)*100}%"></div></div>
-    <div class="eq-display">${q.eq}</div>
-    <p style="color:var(--muted);font-size:0.88rem;margin-bottom:0.75rem;">How many <strong style="color:var(--accent4)">${q.ask}</strong> atoms are in the expression above?</p>
-    <div class="input-row" style="margin-bottom:1rem;">
-      <input class="text-input" id="ac-inp" type="number" min="1" max="20" placeholder="Enter count..." onkeydown="if(event.key==='Enter')checkAtomCount()">
-      <button class="btn" onclick="checkAtomCount()">Check</button>
-    </div>
-    <div class="feedback-box" id="ac-fb"></div>
-    <div style="margin-top:0.5rem;">
-      <p class="hint-text">Tip: coefficient × subscript = total atoms for that element</p>
-    </div>
-  `);
-  setTimeout(() => document.getElementById('ac-inp') && document.getElementById('ac-inp').focus(), 100);
-}
-function checkAtomCount() {
-  const q = gState.questions[gState.idx];
-  const val = parseInt(document.getElementById('ac-inp').value);
-  const fb = document.getElementById('ac-fb');
-  if(isNaN(val)) { if(fb){fb.className='feedback-box bad';fb.textContent='Enter a number first.';} return; }
-  if(val === q.answer) {
-    gState.score++;
-    if(fb){fb.className='feedback-box good';fb.textContent=`✓ Correct! There are ${q.answer} ${q.ask} atoms.`;}
+function checkTF(ans) {
+  const q = gS.qs[gS.idx];
+  $('tfT').disabled = true; $('tfF').disabled = true;
+  const fb = $('fb');
+  if (ans === q.a) {
+    gS.score++; gS.streak++;
+    if (fb) { fb.className = 'feedback good'; fb.textContent = '✓ Correct! ' + q.exp; }
+    screenFlash('good');
+    checkStreak(gS.streak);
   } else {
-    if(fb){fb.className='feedback-box bad';fb.textContent=`✗ Wrong. There are ${q.answer} ${q.ask} atoms. Remember: multiply coefficient by subscript.`;}
+    gS.streak = 0;
+    if (fb) { fb.className = 'feedback bad'; fb.textContent = '✗ Wrong. ' + q.exp; }
+    gS.wrong.push({ q: q.q.substring(0, 40) + '...', a: q.a ? 'TRUE' : 'FALSE' });
+    screenFlash('bad');
   }
-  gState.idx++;
-  setTimeout(() => renderAtomCount(), 1800);
-}
-function endAtomCount() {
-  const pct = Math.round((gState.score/gState.total)*100);
-  openModal(`<button class="modal-close" onclick="closeModal()">✕</button>
-    <div class="game-over-screen fade-in">
-      <div class="modal-title">🔢 Atom Counter</div>
-      <div class="big-score">${gState.score}/${gState.total}</div>
-      <div class="grade">${pct>=90?'🏆 Perfect counter!':pct>=70?'👍 Good!':pct>=50?'😐 Watch the coefficients':'📖 Remember: coeff × subscript = total'} (${pct}%)</div>
-      <div class="btn-row" style="justify-content:center;margin-top:1.5rem;">
-        <button class="btn" onclick="startAtomCount()">Play Again</button>
-        <button class="btn-secondary" onclick="closeModal()">Close</button>
-      </div>
-    </div>`);
+  gS.idx++;
+  setTimeout(renderTF, 2200);
 }
 
-// ===================== GAME: COMBUSTION CHALLENGE =====================
-function startCombustion() {
-  gState = { questions: shuffle(combustionEquations), idx:0, score:0, total: combustionEquations.length, step:0 };
-  renderCombustion();
-}
-function renderCombustion() {
-  if(gState.idx >= gState.total) { endCombustion(); return; }
-  const q = gState.questions[gState.idx];
-  openModal(`
-    <button class="modal-close" onclick="closeModal()">✕</button>
-    <div class="modal-title">🔥 Combustion Challenge</div>
-    <div class="modal-sub">Balance the complete combustion of ${q.name} (${q.fuel}). Remember: balance C → H → O (last).</div>
-    <div class="score-bar">
-      <div class="score-chip">Score: <span>${gState.score}</span></div>
-      <div class="score-chip">Q: <span>${gState.idx+1}</span>/${gState.total}</div>
-    </div>
-    <div class="eq-display">${q.fuelCoeff?`__ ${q.fuel}`:`${q.fuel}`} + __ O₂ → __ CO₂ + __ H₂O</div>
-    <p style="color:var(--muted);font-size:0.83rem;margin-bottom:0.75rem;">Enter coefficients in order: ${q.fuelCoeff?'fuel, ':''}O₂, CO₂, H₂O</p>
-    <div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:1rem;">
-      ${q.fuelCoeff?`<div><label style="font-size:0.75rem;color:var(--muted);">${q.fuel}</label><br><input class="coeff-input" id="cc0" type="number" min="1" max="20" placeholder="?"></div>`:''}
-      <div><label style="font-size:0.75rem;color:var(--muted);">O₂</label><br><input class="coeff-input" id="cc${q.fuelCoeff?1:0}" type="number" min="1" max="20" placeholder="?"></div>
-      <div><label style="font-size:0.75rem;color:var(--muted);">CO₂</label><br><input class="coeff-input" id="cc${q.fuelCoeff?2:1}" type="number" min="1" max="20" placeholder="?"></div>
-      <div><label style="font-size:0.75rem;color:var(--muted);">H₂O</label><br><input class="coeff-input" id="cc${q.fuelCoeff?3:2}" type="number" min="1" max="20" placeholder="?"></div>
-    </div>
-    <div class="feedback-box" id="cc-fb"></div>
-    <div class="btn-row">
-      <button class="btn" onclick="checkCombustion()">Check</button>
-      <button class="btn-secondary" onclick="showCombustionHint()">💡 Hint</button>
-    </div>
-  `);
-}
-function showCombustionHint() {
-  const q = gState.questions[gState.idx];
-  const fb = document.getElementById('cc-fb');
-  if(fb){fb.className='feedback-box info';fb.textContent=`Hint: ${q.fuel} has ${q.c} carbon(s) → CO₂ coefficient = ${q.co2}. Has ${q.h} hydrogen(s) → H₂O coefficient = ${q.h2o}. Then count all O on right and figure out O₂.`;}
-}
-function checkCombustion() {
-  const q = gState.questions[gState.idx];
-  const fb = document.getElementById('cc-fb');
-  let expected, inputs;
-  if(q.fuelCoeff) {
-    expected = [q.fuelCoeff, q.o2, q.co2, q.h2o];
-    inputs = [0,1,2,3];
-  } else {
-    expected = [q.o2, q.co2, q.h2o];
-    inputs = [0,1,2];
-  }
-  let vals = inputs.map(i => parseInt((document.getElementById('cc'+i)||{}).value));
-  if(vals.some(isNaN)) { if(fb){fb.className='feedback-box bad';fb.textContent='Fill in all boxes!';} return; }
-  if(vals.every((v,i)=>v===expected[i])) {
-    gState.score++;
-    if(fb){fb.className='feedback-box good';fb.textContent=`✓ Correct! ${q.balanced}`;}
-  } else {
-    if(fb){fb.className='feedback-box bad';fb.textContent=`✗ Incorrect. Balanced: ${q.balanced}${q.note?' '+q.note:''}`;}
-  }
-  gState.idx++;
-  setTimeout(() => renderCombustion(), 2200);
-}
-function endCombustion() {
-  const pct = Math.round((gState.score/gState.total)*100);
-  openModal(`<button class="modal-close" onclick="closeModal()">✕</button>
-    <div class="game-over-screen fade-in">
-      <div class="modal-title">🔥 Combustion Challenge</div>
-      <div class="big-score">${gState.score}/${gState.total}</div>
-      <div class="grade">${pct>=90?'🔥 On fire!':pct>=50?'👍 Getting it!':'📖 Remember: C first, H second, O last'} (${pct}%)</div>
-      <div class="btn-row" style="justify-content:center;margin-top:1.5rem;">
-        <button class="btn" onclick="startCombustion()">Play Again</button>
-        <button class="btn-secondary" onclick="closeModal()">Close</button>
-      </div>
-    </div>`);
+// ============================================================
+// GAME 4: FILL THE GAP
+// ============================================================
+function initFillGap() {
+  gS = { qs: pick(FILL_Q, 12), idx: 0, score: 0, streak: 0, wrong: [] };
+  renderFillGap();
 }
 
-// ===================== GAME: SPEED ROUND =====================
-const speedEqs = [
-  { eq: 'H₂ + O₂ → H₂O', inputs: 2, answer: [2,2], labels: ['H₂','H₂O'] },
-  { eq: 'Na + Cl₂ → NaCl', inputs: 2, answer: [2,2], labels: ['Na','NaCl'] },
-  { eq: 'N₂ + H₂ → NH₃', inputs: 2, answer: [3,2], labels: ['H₂','NH₃'] },
-  { eq: 'Mg + O₂ → MgO', inputs: 2, answer: [2,2], labels: ['Mg','MgO'] },
-  { eq: 'C + O₂ → CO₂', inputs: 0, answer: [], labels: [], note: 'Already balanced!' },
-  { eq: 'Fe + O₂ → Fe₂O₃', inputs: 3, answer: [4,3,2], labels: ['Fe','O₂','Fe₂O₃'] },
-  { eq: 'H₂O → H₂ + O₂', inputs: 2, answer: [2,2], labels: ['H₂O','H₂'] },
-  { eq: 'KClO₃ → KCl + O₂', inputs: 3, answer: [2,2,3], labels: ['KClO₃','KCl','O₂'] },
-];
-function startSpeed() {
-  gState = { questions: shuffle([...speedEqs,...speedEqs]).slice(0,20), idx:0, score:0, total:20, timeLeft:60, running:true };
-  renderSpeed();
-  gState.timer = setInterval(() => {
-    gState.timeLeft--;
-    const te = document.getElementById('sp-timer');
-    if(te) { te.textContent = gState.timeLeft+'s'; if(gState.timeLeft<=10) te.style.color='var(--danger)'; }
-    if(gState.timeLeft <= 0) { clearInterval(gState.timer); gState.running=false; endSpeed(); }
-  }, 1000);
-}
-function renderSpeed() {
-  if(!gState.running || gState.idx >= gState.total) { clearInterval(gState.timer); endSpeed(); return; }
-  const q = gState.questions[gState.idx];
-  let inputsHtml = '';
-  if(q.inputs === 0) {
-    inputsHtml = `<p style="color:var(--accent3);font-family:var(--mono);">Already balanced! Press Next.</p>`;
-  } else {
-    for(let i=0;i<q.inputs;i++) {
-      inputsHtml += `<div style="display:flex;flex-direction:column;gap:4px;align-items:center;">
-        <label style="font-size:0.7rem;color:var(--muted);">${q.labels[i]}</label>
-        <input class="coeff-input" id="sp${i}" type="number" min="1" max="20" placeholder="?" style="width:60px;" onkeydown="if(event.key==='Enter')checkSpeed()">
-      </div>`;
-    }
-  }
-  openModal(`
-    <button class="modal-close" onclick="clearInterval(gState.timer);closeModal()">✕</button>
-    <div class="modal-title">⚡ Speed Round</div>
-    <div class="score-bar">
-      <div class="score-chip">Score: <span id="sp-score">${gState.score}</span></div>
-      <div class="score-chip">Timer: <span class="timer-ring" id="sp-timer">${gState.timeLeft}s</span></div>
-      <div class="score-chip">Q: <span>${gState.idx+1}</span>/${gState.total}</div>
-    </div>
-    <div class="progress-bar"><div class="progress-fill" style="width:${(gState.idx/gState.total)*100}%"></div></div>
-    <div class="eq-display">${q.eq}</div>
-    <div style="display:flex;gap:0.75rem;flex-wrap:wrap;align-items:flex-end;margin-bottom:1rem;">${inputsHtml}</div>
-    <div class="feedback-box" id="sp-fb"></div>
-    <div class="btn-row">
-      ${q.inputs===0?`<button class="btn" onclick="nextSpeed()">Next →</button>`:`<button class="btn" onclick="checkSpeed()">Submit</button>`}
-      <button class="btn-secondary" onclick="skipSpeed()">Skip</button>
-    </div>
-  `);
-  if(q.inputs > 0) setTimeout(() => document.getElementById('sp0') && document.getElementById('sp0').focus(), 50);
-}
-function checkSpeed() {
-  if(!gState.running) return;
-  const q = gState.questions[gState.idx];
-  if(q.inputs === 0) { nextSpeed(); return; }
-  let vals = [];
-  for(let i=0;i<q.inputs;i++) {
-    const v = parseInt((document.getElementById('sp'+i)||{}).value);
-    if(isNaN(v)) { const fb=document.getElementById('sp-fb'); if(fb){fb.className='feedback-box bad';fb.textContent='Fill all boxes!';} return; }
-    vals.push(v);
-  }
-  const fb = document.getElementById('sp-fb');
-  if(vals.every((v,i)=>v===q.answer[i])) {
-    gState.score++;
-    if(fb){fb.className='feedback-box good';fb.textContent='✓ Correct!';}
-  } else {
-    if(fb){fb.className='feedback-box bad';fb.textContent=`✗ Answer: [${q.answer.join(', ')}]`;}
-  }
-  gState.idx++;
-  setTimeout(() => renderSpeed(), 800);
-}
-function skipSpeed() { gState.idx++; renderSpeed(); }
-function nextSpeed() { checkSpeed(); }
-function endSpeed() {
-  clearInterval(gState.timer);
-  openModal(`<button class="modal-close" onclick="closeModal()">✕</button>
-    <div class="game-over-screen fade-in">
-      <div class="modal-title">⚡ Speed Round</div>
-      <div class="big-score">${gState.score}</div>
-      <div class="grade">${gState.score>=15?'🚀 Lightning fast!':gState.score>=8?'⚡ Good speed!':'⏱️ Keep practicing for more speed!'} correct in 60s</div>
-      <div class="btn-row" style="justify-content:center;margin-top:1.5rem;">
-        <button class="btn" onclick="startSpeed()">Try Again</button>
-        <button class="btn-secondary" onclick="closeModal()">Close</button>
-      </div>
-    </div>`);
+function renderFillGap() {
+  if (gS.idx >= gS.qs.length) { showResult('Fill the Gap', '✏️', gS.score, gS.qs.length, gS.wrong); return; }
+  const q = gS.qs[gS.idx];
+  openModal(
+    '<button class="modal-x" onclick="closeModal()">✕</button>' +
+    '<div class="modal-title">✏️ Fill the Gap</div>' +
+    '<div class="modal-sub">Find the missing coefficient. The equation is otherwise balanced.</div>' +
+    '<div class="stats-bar">' +
+    '<div class="stat-chip">Score: <span>' + gS.score + '</span></div>' +
+    '<div class="stat-chip streak">Streak: <span>' + gS.streak + '</span></div>' +
+    '<div class="stat-chip">Q: <span>' + (gS.idx + 1) + '</span>/' + gS.qs.length + '</div>' +
+    '</div>' +
+    '<div class="prog-wrap"><div class="prog-bar" style="width:' + Math.round((gS.idx / gS.qs.length) * 100) + '%"></div></div>' +
+    typeBadge(q.type) +
+    '<div class="eq-display" style="font-size:.95rem">' + q.eq + '</div>' +
+    '<p style="font-size:.8rem;color:var(--muted2);margin-bottom:.6rem">What is the missing coefficient (__ )?</p>' +
+    '<div class="inp-row">' +
+    '<input class="text-inp" id="gapInp" type="number" min="1" max="99" placeholder="Enter coefficient..." autocomplete="off">' +
+    '<button class="btn" onclick="submitFillGap()">Check ✓</button>' +
+    '</div>' +
+    '<div class="feedback" id="fb"></div>' +
+    '<div class="btn-row">' +
+    '<button class="btn btn-ghost" id="skipBtn" onclick="skipFillGap()">Skip →</button>' +
+    '</div>'
+  );
+  const inp = $('gapInp');
+  if (inp) inp.addEventListener('keydown', function(e) { if (e.key === 'Enter') submitFillGap(); });
 }
 
-// ===================== GAME: MCQ =====================
-function startMCQ() {
-  gState = { questions: shuffle(mcqQuestions).slice(0,10), idx:0, score:0, total:10 };
+function submitFillGap() {
+  const q = gS.qs[gS.idx];
+  const inp = $('gapInp');
+  const val = parseInt(inp ? inp.value : '');
+  const fb = $('fb');
+  if (isNaN(val)) { if (fb) { fb.className = 'feedback'; fb.textContent = 'Enter a number!'; } shakeModal(); return; }
+  if (inp) { inp.disabled = true; }
+  if (val === q.ans) {
+    gS.score++; gS.streak++;
+    if (fb) { fb.className = 'feedback good'; fb.textContent = '✓ Correct! Full: ' + q.full; }
+    screenFlash('good');
+    const r = inp.getBoundingClientRect(); spawnParticles(r.left + r.width / 2, r.top);
+    checkStreak(gS.streak);
+  } else {
+    gS.streak = 0;
+    if (fb) { fb.className = 'feedback bad'; fb.textContent = '✗ Answer is ' + q.ans + '. Full: ' + q.full; }
+    gS.wrong.push({ q: q.eq, a: String(q.ans) });
+    screenFlash('bad');
+    shakeModal();
+  }
+  gS.idx++;
+  setTimeout(renderFillGap, 1900);
+}
+
+function skipFillGap() {
+  gS.streak = 0;
+  gS.wrong.push({ q: gS.qs[gS.idx].eq, a: 'Skipped' });
+  gS.idx++;
+  renderFillGap();
+}
+
+// ============================================================
+// GAME 5: MULTIPLE CHOICE
+// ============================================================
+function initMCQ() {
+  gS = { qs: pick(MCQ_Q, 12), idx: 0, score: 0, streak: 0, wrong: [] };
   renderMCQ();
 }
+
 function renderMCQ() {
-  if(gState.idx >= gState.total) { endMCQ(); return; }
-  const q = gState.questions[gState.idx];
-  openModal(`
-    <button class="modal-close" onclick="closeModal()">✕</button>
-    <div class="modal-title">📋 Multiple Choice</div>
-    <div class="modal-sub">Choose the best answer.</div>
-    <div class="score-bar">
-      <div class="score-chip">Score: <span>${gState.score}</span></div>
-      <div class="score-chip">Q: <span>${gState.idx+1}</span>/${gState.total}</div>
-    </div>
-    <div class="progress-bar"><div class="progress-fill" style="width:${(gState.idx/gState.total)*100}%"></div></div>
-    <div class="eq-display" style="font-size:0.95rem;font-family:var(--sans);text-align:left;line-height:1.5;">${q.q}</div>
-    <div class="choices-grid">
-      ${q.choices.map((c,i)=>`<button class="choice-btn" onclick="checkMCQ(${i},this)">${String.fromCharCode(65+i)}. ${c}</button>`).join('')}
-    </div>
-    <div class="feedback-box" id="mcq-fb"></div>
-  `);
+  if (gS.idx >= gS.qs.length) { showResult('Multiple Choice', '📋', gS.score, gS.qs.length, gS.wrong); return; }
+  const q = gS.qs[gS.idx];
+  openModal(
+    '<button class="modal-x" onclick="closeModal()">✕</button>' +
+    '<div class="modal-title">📋 Multiple Choice</div>' +
+    '<div class="modal-sub">Choose the best answer.</div>' +
+    '<div class="stats-bar">' +
+    '<div class="stat-chip">Score: <span>' + gS.score + '</span></div>' +
+    '<div class="stat-chip streak">Streak: <span>' + gS.streak + '</span></div>' +
+    '<div class="stat-chip">Q: <span>' + (gS.idx + 1) + '</span>/' + gS.qs.length + '</div>' +
+    '</div>' +
+    '<div class="prog-wrap"><div class="prog-bar" style="width:' + Math.round((gS.idx / gS.qs.length) * 100) + '%"></div></div>' +
+    '<div class="eq-display" style="font-family:var(--sans);font-size:.9rem;text-align:left;line-height:1.5">' + q.q + '</div>' +
+    '<div class="choices">' +
+    q.opts.map((o, i) => '<button class="choice" onclick="checkMCQ(' + i + ',this)">' + String.fromCharCode(65 + i) + '. ' + o + '</button>').join('') +
+    '</div>' +
+    '<div class="feedback" id="fb"></div>'
+  );
 }
+
 function checkMCQ(chosen, btn) {
-  const q = gState.questions[gState.idx];
-  const fb = document.getElementById('mcq-fb');
-  document.querySelectorAll('.choice-btn').forEach(b=>b.disabled=true);
-  if(chosen === q.answer) {
-    gState.score++;
-    btn.className='choice-btn correct-choice';
-    if(fb){fb.className='feedback-box good';fb.textContent='✓ Correct!';}
+  const q = gS.qs[gS.idx];
+  document.querySelectorAll('.choice').forEach(b => b.disabled = true);
+  const fb = $('fb');
+  if (chosen === q.ans) {
+    gS.score++; gS.streak++;
+    btn.className = 'choice choice-ok';
+    if (fb) { fb.className = 'feedback good'; fb.textContent = '✓ Correct!'; }
+    screenFlash('good');
+    const r = btn.getBoundingClientRect(); spawnParticles(r.left + r.width / 2, r.top + r.height / 2);
+    checkStreak(gS.streak);
   } else {
-    btn.className='choice-btn wrong-choice';
-    document.querySelectorAll('.choice-btn').forEach((b,i)=>{ if(i===q.answer) b.className='choice-btn correct-choice'; });
-    if(fb){fb.className='feedback-box bad';fb.textContent=`✗ Incorrect. The answer was: ${q.choices[q.answer]}`;}
+    gS.streak = 0;
+    btn.className = 'choice choice-err';
+    document.querySelectorAll('.choice').forEach((b, i) => { if (i === q.ans) b.className = 'choice choice-ok'; });
+    if (fb) { fb.className = 'feedback bad'; fb.textContent = '✗ The answer was: ' + q.opts[q.ans]; }
+    gS.wrong.push({ q: q.q.substring(0, 45) + '...', a: q.opts[q.ans] });
+    screenFlash('bad');
   }
-  gState.idx++;
-  setTimeout(() => renderMCQ(), 1800);
-}
-function endMCQ() {
-  const pct = Math.round((gState.score/gState.total)*100);
-  openModal(`<button class="modal-close" onclick="closeModal()">✕</button>
-    <div class="game-over-screen fade-in">
-      <div class="modal-title">📋 Multiple Choice</div>
-      <div class="big-score">${gState.score}/${gState.total}</div>
-      <div class="grade">${pct>=90?'🏆 Excellent!':pct>=70?'👍 Good!':pct>=50?'😐 Review weak areas':'📖 Go through the Learn section'} (${pct}%)</div>
-      <div class="btn-row" style="justify-content:center;margin-top:1.5rem;">
-        <button class="btn" onclick="startMCQ()">Play Again</button>
-        <button class="btn-secondary" onclick="closeModal()">Close</button>
-      </div>
-    </div>`);
+  gS.idx++;
+  setTimeout(renderMCQ, 1800);
 }
 
-// ===================== GAME: PREDICT THE PRODUCT =====================
-const productData = [
-  { q: 'Na + Cl₂ →', type: 'Synthesis', choices: ['NaCl', 'NaCl₂', 'Na₂Cl', 'Na + Cl'], answer: 0, exp: 'Na⁺ + Cl⁻ → NaCl (sodium chloride)' },
-  { q: '2H₂O →', type: 'Decomposition', choices: ['H + O₂', 'H₂ + O₂', 'H₂O₂ + H', 'H₃ + O'], answer: 1, exp: 'Water decomposes into hydrogen gas (H₂) and oxygen gas (O₂).' },
-  { q: 'Zn + 2HCl →', type: 'Single Displacement', choices: ['ZnCl + H₂', 'ZnCl₂ + H₂', 'Zn₂Cl + H', 'ZnH + Cl₂'], answer: 1, exp: 'Zinc displaces hydrogen: ZnCl₂ + H₂' },
-  { q: 'NaCl + AgNO₃ →', type: 'Double Displacement', choices: ['NaNO₃ + AgCl', 'NaAg + ClNO₃', 'Na₂Cl + Ag(NO₃)₂', 'AgNa + ClNO₃'], answer: 0, exp: 'Ions swap: Na⁺ pairs with NO₃⁻ and Ag⁺ pairs with Cl⁻.' },
-  { q: 'CH₄ + 2O₂ →', type: 'Combustion', choices: ['CO + H₂O', 'CO₂ + 2H₂O', 'C + H₂O', 'CO₂ + H₂'], answer: 1, exp: 'Complete combustion of methane produces CO₂ and H₂O.' },
-  { q: 'Ca + O₂ →', type: 'Elemental Combustion', choices: ['CaO', 'Ca₂O', 'CaO₂', 'Ca₂O₃'], answer: 0, exp: 'Calcium oxide (CaO) — Ca²⁺ + O²⁻.' },
-  { q: 'KClO₃ →', type: 'Decomposition', choices: ['K + ClO₃', 'KCl + O₂', 'KCl₃ + O', 'KO + Cl₂'], answer: 1, exp: 'Potassium chlorate decomposes to KCl + O₂.' },
-];
-function startProduct() {
-  gState = { questions: shuffle(productData), idx:0, score:0, total: productData.length };
-  renderProduct();
-}
-function renderProduct() {
-  if(gState.idx >= gState.total) { endProduct(); return; }
-  const q = gState.questions[gState.idx];
-  openModal(`
-    <button class="modal-close" onclick="closeModal()">✕</button>
-    <div class="modal-title">🧪 Predict the Product</div>
-    <div class="modal-sub">What are the correct products of this ${q.type} reaction?</div>
-    <div class="score-bar">
-      <div class="score-chip">Score: <span>${gState.score}</span></div>
-      <div class="score-chip">Q: <span>${gState.idx+1}</span>/${gState.total}</div>
-    </div>
-    <div class="progress-bar"><div class="progress-fill" style="width:${(gState.idx/gState.total)*100}%"></div></div>
-    <div style="display:inline-block;background:rgba(0,229,255,0.08);border:1px solid rgba(0,229,255,0.2);border-radius:6px;padding:3px 10px;font-size:0.75rem;color:var(--accent);font-family:var(--mono);margin-bottom:0.75rem;">${q.type}</div>
-    <div class="eq-display">${q.q} ?</div>
-    <div class="choices-grid">
-      ${q.choices.map((c,i)=>`<button class="choice-btn" onclick="checkProduct(${i},this)" style="font-family:var(--mono);">${c}</button>`).join('')}
-    </div>
-    <div class="feedback-box" id="pr-fb"></div>
-  `);
-}
-function checkProduct(chosen, btn) {
-  const q = gState.questions[gState.idx];
-  const fb = document.getElementById('pr-fb');
-  document.querySelectorAll('.choice-btn').forEach(b=>b.disabled=true);
-  if(chosen === q.answer) {
-    gState.score++;
-    btn.className='choice-btn correct-choice';
-    if(fb){fb.className='feedback-box good';fb.textContent='✓ Correct! '+q.exp;}
-  } else {
-    btn.className='choice-btn wrong-choice';
-    document.querySelectorAll('.choice-btn').forEach((b,i)=>{ if(i===q.answer) b.className='choice-btn correct-choice'; });
-    if(fb){fb.className='feedback-box bad';fb.textContent='✗ Wrong. '+q.exp;}
-  }
-  gState.idx++;
-  setTimeout(() => renderProduct(), 2200);
-}
-function endProduct() {
-  const pct = Math.round((gState.score/gState.total)*100);
-  openModal(`<button class="modal-close" onclick="closeModal()">✕</button>
-    <div class="game-over-screen fade-in">
-      <div class="modal-title">🧪 Predict the Product</div>
-      <div class="big-score">${gState.score}/${gState.total}</div>
-      <div class="grade">${pct>=90?'🏆 Chemistry Pro!':pct>=70?'👍 Good instincts!':'📖 Review reaction types'} (${pct}%)</div>
-      <div class="btn-row" style="justify-content:center;margin-top:1.5rem;">
-        <button class="btn" onclick="startProduct()">Play Again</button>
-        <button class="btn-secondary" onclick="closeModal()">Close</button>
-      </div>
-    </div>`);
+// ============================================================
+// GAME 6: PREDICT THE PRODUCT
+// ============================================================
+function initPredict() {
+  gS = { qs: pick(PREDICT_Q, 10), idx: 0, score: 0, streak: 0, wrong: [] };
+  renderPredict();
 }
 
-// ===================== GAME: FILL THE BLANK =====================
-function startFillBlank() {
-  gState = { questions: shuffle(fillBlankData), idx:0, score:0, total: fillBlankData.length };
-  renderFillBlank();
-}
-function renderFillBlank() {
-  if(gState.idx >= gState.total) { endFillBlank(); return; }
-  const q = gState.questions[gState.idx];
-  openModal(`
-    <button class="modal-close" onclick="closeModal()">✕</button>
-    <div class="modal-title">✏️ Fill the Blank</div>
-    <div class="modal-sub">This equation is almost balanced. Find the missing coefficient.</div>
-    <div class="score-bar">
-      <div class="score-chip">Score: <span>${gState.score}</span></div>
-      <div class="score-chip">Q: <span>${gState.idx+1}</span>/${gState.total}</div>
-    </div>
-    <div class="progress-bar"><div class="progress-fill" style="width:${(gState.idx/gState.total)*100}%"></div></div>
-    <div class="eq-display">${q.display}</div>
-    <p style="color:var(--muted);font-size:0.85rem;margin-bottom:0.75rem;">The __ is the missing coefficient. What should it be?</p>
-    <div class="input-row" style="margin-bottom:1rem;">
-      <input class="text-input" id="fb-inp" type="number" min="1" max="20" placeholder="Enter number..." onkeydown="if(event.key==='Enter')checkFillBlank()">
-      <button class="btn" onclick="checkFillBlank()">Check</button>
-    </div>
-    <div class="feedback-box" id="fb-fb"></div>
-  `);
-  setTimeout(() => document.getElementById('fb-inp') && document.getElementById('fb-inp').focus(), 100);
-}
-function checkFillBlank() {
-  const q = gState.questions[gState.idx];
-  const val = parseInt(document.getElementById('fb-inp').value);
-  const fb = document.getElementById('fb-fb');
-  if(isNaN(val)) { if(fb){fb.className='feedback-box bad';fb.textContent='Enter a number!';} return; }
-  if(val === q.blanks[0].answer) {
-    gState.score++;
-    if(fb){fb.className='feedback-box good';fb.textContent=`✓ Correct! Full equation: ${q.full}`;}
-  } else {
-    if(fb){fb.className='feedback-box bad';fb.textContent=`✗ The answer is ${q.blanks[0].answer}. Full equation: ${q.full}`;}
-  }
-  gState.idx++;
-  setTimeout(() => renderFillBlank(), 1800);
-}
-function endFillBlank() {
-  const pct = Math.round((gState.score/gState.total)*100);
-  openModal(`<button class="modal-close" onclick="closeModal()">✕</button>
-    <div class="game-over-screen fade-in">
-      <div class="modal-title">✏️ Fill the Blank</div>
-      <div class="big-score">${gState.score}/${gState.total}</div>
-      <div class="grade">${pct>=90?'🏆 Perfect!':pct>=70?'👍 Solid!':pct>=50?'😐 Getting there':'📖 Count atoms more carefully'} (${pct}%)</div>
-      <div class="btn-row" style="justify-content:center;margin-top:1.5rem;">
-        <button class="btn" onclick="startFillBlank()">Play Again</button>
-        <button class="btn-secondary" onclick="closeModal()">Close</button>
-      </div>
-    </div>`);
+function renderPredict() {
+  if (gS.idx >= gS.qs.length) { showResult('Predict the Product', '🧪', gS.score, gS.qs.length, gS.wrong); return; }
+  const q = gS.qs[gS.idx];
+  const shuffledOpts = q.opts.map((o, i) => ({ o, origIdx: i }));
+  shuffle(shuffledOpts);
+  gS.shuffledOpts = shuffledOpts;
+  openModal(
+    '<button class="modal-x" onclick="closeModal()">✕</button>' +
+    '<div class="modal-title">🧪 Predict the Product</div>' +
+    '<div class="modal-sub">What are the correct products of this reaction?</div>' +
+    '<div class="stats-bar">' +
+    '<div class="stat-chip">Score: <span>' + gS.score + '</span></div>' +
+    '<div class="stat-chip streak">Streak: <span>' + gS.streak + '</span></div>' +
+    '<div class="stat-chip">Q: <span>' + (gS.idx + 1) + '</span>/' + gS.qs.length + '</div>' +
+    '</div>' +
+    '<div class="prog-wrap"><div class="prog-bar" style="width:' + Math.round((gS.idx / gS.qs.length) * 100) + '%"></div></div>' +
+    typeBadge(q.type) +
+    '<div class="eq-display" style="font-size:1.1rem">' + q.rxn + ' <span style="color:var(--muted2)">?</span></div>' +
+    '<div class="choices">' +
+    shuffledOpts.map((item, si) => '<button class="choice" style="font-family:var(--mono)" onclick="checkPredict(' + si + ',this)">' + item.o + '</button>').join('') +
+    '</div>' +
+    '<div class="feedback" id="fb"></div>'
+  );
 }
 
-// ===================== GAME: FLASHCARDS =====================
-function startFlash() {
-  gState = { cards: shuffle(flashcardData), idx:0, flipped: false, known:0, unknown:0 };
+function checkPredict(shuffledIdx, btn) {
+  const q = gS.qs[gS.idx];
+  const chosen = gS.shuffledOpts[shuffledIdx];
+  document.querySelectorAll('.choice').forEach(b => b.disabled = true);
+  const fb = $('fb');
+  if (chosen.origIdx === q.ans) {
+    gS.score++; gS.streak++;
+    btn.className = 'choice choice-ok';
+    if (fb) { fb.className = 'feedback good'; fb.textContent = '✓ Correct! ' + q.hint; }
+    screenFlash('good');
+    const r = btn.getBoundingClientRect(); spawnParticles(r.left + r.width / 2, r.top + r.height / 2);
+    checkStreak(gS.streak);
+  } else {
+    gS.streak = 0;
+    btn.className = 'choice choice-err';
+    document.querySelectorAll('.choice').forEach((b, i) => { if (gS.shuffledOpts[i].origIdx === q.ans) b.className = 'choice choice-ok'; });
+    if (fb) { fb.className = 'feedback bad'; fb.textContent = '✗ Wrong. ' + q.hint; }
+    gS.wrong.push({ q: q.rxn, a: q.opts[q.ans] });
+    screenFlash('bad');
+  }
+  gS.idx++;
+  setTimeout(renderPredict, 2100);
+}
+
+// ============================================================
+// GAME 7: SPEED DRILL
+// ============================================================
+function initSpeed() {
+  gS = { qs: shuffle([...BALANCE_Q]).slice(0, 25), idx: 0, score: 0, timeLeft: 60, running: true };
+  renderSpeed();
+  gS.timer = setInterval(function() {
+    gS.timeLeft--;
+    const tb = $('timerBar');
+    const tl = $('timerLabel');
+    if (tb) { tb.style.width = (gS.timeLeft / 60 * 100) + '%'; if (gS.timeLeft <= 15) tb.style.background = 'var(--dec)'; else if (gS.timeLeft <= 30) tb.style.background = 'var(--sng)'; }
+    if (tl) { tl.textContent = gS.timeLeft + 's'; if (gS.timeLeft <= 10) tl.style.color = 'var(--dec)'; }
+    if (gS.timeLeft <= 0) { clearInterval(gS.timer); gS.running = false; endSpeed(); }
+  }, 1000);
+}
+
+function renderSpeed() {
+  if (!gS.running || gS.idx >= gS.qs.length) { clearInterval(gS.timer); endSpeed(); return; }
+  const q = gS.qs[gS.idx];
+  openModal(
+    '<button class="modal-x" onclick="clearInterval(gS.timer);closeModal()">✕</button>' +
+    '<div class="modal-title">⚡ Speed Drill</div>' +
+    '<div class="stats-bar">' +
+    '<div class="stat-chip">Score: <span id="spScore">' + gS.score + '</span></div>' +
+    '<div class="stat-chip">Timer: <span id="timerLabel" style="color:var(--sng)">' + gS.timeLeft + 's</span></div>' +
+    '<div class="stat-chip">Q: <span>' + (gS.idx + 1) + '</span>/' + gS.qs.length + '</div>' +
+    '</div>' +
+    '<div class="timer-bar-wrap"><div class="timer-bar" id="timerBar" style="width:' + (gS.timeLeft / 60 * 100) + '%"></div></div>' +
+    typeBadge(q.type) +
+    '<div class="eq-display">' + eqHTML(q.eq) + '</div>' +
+    '<div class="feedback" id="fb">Type coefficients and press Enter or Check!</div>' +
+    '<div class="btn-row">' +
+    '<button class="btn" onclick="submitSpeed()">Check ✓</button>' +
+    '<button class="btn btn-ghost" onclick="gS.idx++;renderSpeed()">Skip →</button>' +
+    '</div>'
+  );
+  const n = q.ans.length;
+  for (let i = 0; i < n; i++) {
+    const el = $('inp' + i);
+    if (el) el.addEventListener('keydown', function(e) { if (e.key === 'Enter') submitSpeed(); });
+  }
+}
+
+function submitSpeed() {
+  if (!gS.running) return;
+  const q = gS.qs[gS.idx];
+  const vals = readInputs(q.ans.length);
+  if (vals.some(isNaN)) { const fb = $('fb'); if (fb) { fb.className = 'feedback'; fb.textContent = 'Fill all boxes!'; } return; }
+  const fb = $('fb');
+  const correct = vals.every((v, i) => v === q.ans[i]);
+  if (correct) {
+    gS.score++;
+    const el = $('spScore'); if (el) el.textContent = gS.score;
+    if (fb) { fb.className = 'feedback good'; fb.textContent = '✓ Correct!'; }
+    screenFlash('good');
+  } else {
+    if (fb) { fb.className = 'feedback bad'; fb.textContent = '✗ Answer: [' + q.ans.join(', ') + ']'; }
+    screenFlash('bad');
+  }
+  gS.idx++;
+  setTimeout(renderSpeed, 600);
+}
+
+function endSpeed() {
+  clearInterval(gS.timer);
+  const grade = gS.score >= 18 ? '🚀 Insane speed!' : gS.score >= 12 ? '⚡ Fast!' : gS.score >= 6 ? '💪 Not bad — keep grinding' : '⏱️ Keep practicing!';
+  saveBest(currentGame, gS.score, 20);
+  openModal(
+    '<button class="modal-x" onclick="closeModal()">✕</button>' +
+    '<div class="result-screen slide-in">' +
+    '<div style="font-size:2rem">⚡</div>' +
+    '<div class="modal-title" style="margin-top:.5rem">Speed Drill</div>' +
+    '<div class="result-score">' + gS.score + '</div>' +
+    '<div class="result-label">' + grade + ' in 60 seconds</div>' +
+    '<div class="btn-row" style="justify-content:center">' +
+    '<button class="btn" onclick="launchGame(\'speed\')">Try Again</button>' +
+    '<button class="btn btn-ghost" onclick="closeModal()">Close</button>' +
+    '</div></div>'
+  );
+  loadBestScores();
+}
+
+// ============================================================
+// GAME 8: FLASHCARDS
+// ============================================================
+function initFlash() {
+  gS = { cards: shuffle(FLASH_Q), idx: 0, flipped: false, known: 0, unknown: 0 };
   renderFlash();
 }
+
 function renderFlash() {
-  const c = gState.cards[gState.idx];
-  const total = gState.cards.length;
-  openModal(`
-    <button class="modal-close" onclick="closeModal()">✕</button>
-    <div class="modal-title">🃏 Flashcards</div>
-    <div class="modal-sub">Click the card to flip it. Mark whether you knew it.</div>
-    <div class="score-bar">
-      <div class="score-chip">✓ Known: <span style="color:var(--accent3)">${gState.known}</span></div>
-      <div class="score-chip">✗ Review: <span style="color:var(--danger)">${gState.unknown}</span></div>
-      <div class="score-chip"><span>${gState.idx+1}</span>/${total}</div>
-    </div>
-    <div class="progress-bar"><div class="progress-fill" style="width:${(gState.idx/total)*100}%"></div></div>
-    <div onclick="flipFlash()" style="
-      background:${gState.flipped?'var(--surface2)':'var(--bg)'};
-      border:2px solid ${gState.flipped?'var(--accent)':'var(--border)'};
-      border-radius:12px;padding:2rem;text-align:center;cursor:pointer;
-      min-height:140px;display:flex;align-items:center;justify-content:center;flex-direction:column;
-      transition:all 0.3s;margin-bottom:1rem;
-    ">
-      <div style="font-size:0.7rem;font-family:var(--mono);color:var(--muted);margin-bottom:0.5rem;">${gState.flipped?'ANSWER':'QUESTION — click to flip'}</div>
-      <div style="font-size:${gState.flipped?'0.9rem':'1rem'};font-weight:${gState.flipped?'400':'700'};color:${gState.flipped?'var(--text)':'var(--accent)'};white-space:pre-line;line-height:1.6;">${gState.flipped?c.back:c.front}</div>
-    </div>
-    ${gState.flipped?`
-    <div class="btn-row" style="justify-content:center;">
-      <button class="btn" style="background:var(--accent3);" onclick="markFlash(true)">✓ Got it</button>
-      <button class="btn" style="background:var(--danger);" onclick="markFlash(false)">✗ Need more review</button>
-    </div>`:`<div style="text-align:center;color:var(--muted);font-size:0.85rem;">Click card to reveal answer</div>`}
-  `);
+  const total = gS.cards.length;
+  if (gS.idx >= total) { endFlash(); return; }
+  const c = gS.cards[gS.idx];
+  const dots = gS.cards.map((_, i) => {
+    let cls = 'fc-dot';
+    if (i < gS.idx) cls += (i < gS.known ? ' fc-known' : ' fc-unk');
+    else if (i === gS.idx) cls += ' fc-cur';
+    return '<div class="' + cls + '"></div>';
+  }).join('');
+  openModal(
+    '<button class="modal-x" onclick="closeModal()">✕</button>' +
+    '<div class="modal-title">🃏 Flashcards</div>' +
+    '<div class="modal-sub">Click the card to flip. Mark if you knew it.</div>' +
+    '<div class="stats-bar">' +
+    '<div class="stat-chip" style="color:var(--dbl)">✓ Known: <span style="color:var(--dbl)">' + gS.known + '</span></div>' +
+    '<div class="stat-chip" style="color:var(--dec)">✗ Review: <span style="color:var(--dec)">' + gS.unknown + '</span></div>' +
+    '<div class="stat-chip"><span>' + (gS.idx + 1) + '</span>/' + total + '</div>' +
+    '</div>' +
+    '<div class="prog-wrap"><div class="prog-bar" style="width:' + Math.round((gS.idx / total) * 100) + '%"></div></div>' +
+    '<div class="fc-progress">' + dots + '</div>' +
+    '<div class="flashcard" onclick="flipFlash()">' +
+    '<div class="fc-label">' + (gS.flipped ? 'ANSWER — click to flip back' : 'QUESTION — click to reveal') + '</div>' +
+    (gS.flipped ? '<div class="fc-back">' + c.b + '</div>' : '<div class="fc-front">' + c.f + '</div>') +
+    '</div>' +
+    (gS.flipped ?
+      '<div class="btn-row" style="justify-content:center">' +
+      '<button class="btn" style="background:var(--dbl)" onclick="markFlash(true)">✓ Got it</button>' +
+      '<button class="btn btn-danger" onclick="markFlash(false)">✗ Need review</button>' +
+      '</div>' :
+      '<p style="text-align:center;font-size:.82rem;color:var(--muted2)">Click the card to reveal the answer</p>'
+    )
+  );
 }
+
 function flipFlash() {
-  gState.flipped = !gState.flipped;
+  gS.flipped = !gS.flipped;
   renderFlash();
 }
+
 function markFlash(knew) {
-  if(knew) gState.known++; else gState.unknown++;
-  gState.idx++;
-  gState.flipped = false;
-  if(gState.idx >= gState.cards.length) {
-    openModal(`<button class="modal-close" onclick="closeModal()">✕</button>
-      <div class="game-over-screen fade-in">
-        <div class="modal-title">🃏 Flashcards Complete!</div>
-        <div class="big-score" style="font-size:2rem;">${gState.known} / ${gState.cards.length}</div>
-        <div class="grade">${gState.unknown===0?'🏆 You know them all!':gState.unknown<=3?'👍 Almost there!':'📖 Keep reviewing the hard ones'}</div>
-        <p style="color:var(--muted);font-size:0.85rem;margin-top:1rem;">✓ Known: ${gState.known} | ✗ Need review: ${gState.unknown}</p>
-        <div class="btn-row" style="justify-content:center;margin-top:1.5rem;">
-          <button class="btn" onclick="startFlash()">Go Again</button>
-          <button class="btn-secondary" onclick="closeModal()">Done</button>
-        </div>
-      </div>`);
-    return;
-  }
+  if (knew) gS.known++; else gS.unknown++;
+  gS.flipped = false;
+  gS.idx++;
   renderFlash();
 }
+
+function endFlash() {
+  const pct = Math.round((gS.known / gS.cards.length) * 100);
+  saveBest(currentGame, gS.known, gS.cards.length);
+  openModal(
+    '<button class="modal-x" onclick="closeModal()">✕</button>' +
+    '<div class="result-screen slide-in">' +
+    '<div style="font-size:2rem">🃏</div>' +
+    '<div class="modal-title" style="margin-top:.5rem">Flashcards Complete</div>' +
+    '<div class="result-score">' + gS.known + '/' + gS.cards.length + '</div>' +
+    '<div class="result-label">' + (gS.unknown === 0 ? '🏆 You nailed all of them!' : gS.unknown <= 3 ? '👍 Almost perfect!' : '📖 Review the ones you missed') + '</div>' +
+    '<p style="color:var(--muted2);font-size:.83rem;margin-bottom:1rem">✓ Known: ' + gS.known + '  |  ✗ Need review: ' + gS.unknown + '</p>' +
+    '<div class="btn-row" style="justify-content:center">' +
+    '<button class="btn" onclick="launchGame(\'flash\')">Go Again</button>' +
+    '<button class="btn btn-ghost" onclick="closeModal()">Done</button>' +
+    '</div></div>'
+  );
+  loadBestScores();
+}
+
+// ============================================================
+// INIT
+// ============================================================
+loadBestScores();
 </script>
 </body>
 </html>
